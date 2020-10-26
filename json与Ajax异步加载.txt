@@ -1,0 +1,97 @@
+一、json
+json是一种传输数据的格式(以对象为样板，本质上就是对象，但属性名必须是字符串形式)
+1.json语法可以表示一下三中类型的值：
+①简单值:和js同样的语法，表示字符串，数值，布尔值和null，字符串必须用双引号，且不支持undefined
+②对象:对象的键名必须放在双引号里面，同一个对象不能有两个同名的属性，末尾没有分号
+③数组:可以通过索引访问其中的值，
+2.json的几种属性/方法
+将json转换成js对象：JSON.parse(json数据);或者eval("("+json数据+")")
+将js对象转换成json：JSON.stringify(js对象); 
+将取来的json字符串数据转换成js对象：eval("("+json数据+")")
+
+二、同步与异步
+①同步与异步的概念
+同步是指排序依次完成，也就是只要上一步没完成就不会进行下一步
+异步是指同时加载同时进行
+②一般js在加载时都是与css、HTML同步加载，而有些工具包形式的js文件不需要同步加载，可以等用到的时候
+再异步进行加载，这就需要js的异步加载
+js异步加载的三种方法(异步加载的js文件禁止使用document.write())
+1.只有IE能用的方法:<script src="...js"  defer="defer">加上defer之后这一部分的js就会与css、HTML
+异步的进行加载,会在整个页面解析完后执行,代码可以写在标签内但是这种方法只有IE能用
+2. async方法: <script src='...js'  async="async">只能加载外部脚本，不能写在script标签内，加载完就会执行
+这种方法浏览器都能用
+3.  loadScript()封装好的函数异步调用
+
+三、Ajax (异步的javascript和XML，无需重新加载整个网页的情况下，能够更新部分网页的技术，不可回退性)
+1. 使用Ajax的几个步骤: 
+首先，创建XMLHttpRequest对象；然后创建新的HTTP请求，并指定其方法和URL；
+接着，设置响应HTTP请求状态变化的函数,然后发送请求，接着获取服务器返回的信息
+2. 第一步，XMLHttpRequest对象(异步请求技术，是ajax的核心)
+① 作用:   向服务器提出请求并处理响应，不阻塞用户，可以在页面加载后进行页面的局部更新
+② 创建：由于浏览器兼容性问题，采用封装好的函数,写在js方法库内
+3. 第二步，创建HTTP请求
+① 采用xhr.open(method,url,async) 其中url是必须的，其他两个参数可以选填
+② method方法：有post和get两种，其中get更简单更快，且大部分情况下都能用，但在以下情况中只能用post：
+无法使用缓存文件，向服务器发送大量数据，包含未知字符的用户输入
+③ async可以填true或者false，true代表异步进行，false代表同步进行
+4. 第三步，设置响应HTTP请求状态变化的函数
+① 服务器会返回若干个属性:responseText(返回的数据的字符串形式)、responseXML(返回的DOM兼容的文档数据对象)、
+status(返回的数字代码，如404未找到，200已就绪)、states Text(伴随状态码的字符串信息，如OK)
+② 具体代码 xhr.onreadystatechange = function (){
+     if(xhr.readyState === 4){
+          if((xhr.status>=200 && xhr.status<300 )|| xhr.status === 304){
+    	data = JSON.parse(xhr.responseText);
+	renderDataToDom();
+          }
+     }
+}
+5. 第四步，发送请求
+① 采用 .send(string)  这里如果采用的是get方法，参数写在open的url？后面，这里的string写null，
+如果是post请求则要把参数写在这里string，注意是字符串形式，且用&连接
+② 如果需要像表单那样post数据，则需要添加http头，然后在send方法中规定希望发送的数据：
+xhr.setRequestHeader('Content-type','application/x-www-form-urlencoded')
+然后在.send(表单信息)
+
+四、跨域问题
+① 什么是跨域  ： 在Ajax的open中请求的url必须是当前文件根目录下的文件，不能跨域名、端口、协议，这些就叫跨域
+② 怎么解决跨域问题：跨域资源共享(CORS)、使用JSONP(常用)、修改document.domain、使用window.name
+③ 什么是JSONP：填充式json，一种跨域解决方案。包含回调函数和数据。类似：def({code:1,name:123})
+④ JSONP的使用：
+第一步，通过script引入js文件，src就是跨域的url，第二步执行回调函数
+function getJSONP(url, callback) {
+            if (!url) {
+                return;
+            } else {
+                var a = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'],
+                    r1 = Math.floor(Math.random() * 10),
+                    r2 = Math.floor(Math.random() * 10),
+                    r3 = Math.floor(Math.random() * 10),
+                    name = 'getJSONP' + a[r1] + a[r2] + a[r3],
+                    cbname = 'getJSONP.' + name,
+                    reg = /'?'/;
+                if (reg.test(url) === false) {
+                    url += '?jsonp=' + cbname;
+                } else {
+                    url += '&jsonp=' + cbname;
+                }
+                var script = document.createElement('script');
+                getJSONP[name] = function (data) {
+                    try {
+                        callback && callback(data);
+                    } catch (e) {
+                        //
+                    } finally {
+                        delete getJSONP[name];
+                        script.parentNode.removeChild(script);
+                    }
+                }
+                script.src = url;
+                document.getElementsByTagName('head')[0].appendChild(script);
+            }
+        }
+
+
+其他几种向后端传输数据的方式：1.ajax、
+2.通过向后端请求图片：const img = new Image(); img.src = "http://rendner.com?参数"   后端可以获取到
+我们请求图片的后面附加的参数，这种方式兼容性最好
+3.sendBeacon，通过navigation.sendBeacon(url,参数)   这种方式成功率最好，但兼容性不好

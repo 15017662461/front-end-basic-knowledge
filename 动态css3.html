@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Javascript</title>
+    <style>
+    body{
+        background-color: #678;
+    }
+    .cb_area{
+        width: 200px;
+        height: 200px;
+        margin: 100px auto;
+        padding: 25px;
+        box-sizing: border-box;
+    }
+
+    .checkbox{
+        width: 150px;
+        height: 150px;
+        position: relative;
+    }
+
+    .checkbox label{
+        display: block;
+        width: 150px;
+        height: 150px;
+        box-sizing: border-box;
+        border: 15px solid #333;
+        border-radius: 10px;
+    }
+
+    .checkbox input[type="checkbox"]{
+        position: absolute;
+        top: 0;
+        left: 0;
+        visibility: hidden;
+    }
+
+    .checkbox label::before,
+    .checkbox label::after{
+        position: absolute;
+        content: "";
+        display: block;
+        width: 25px;
+        height: 50px;
+        transform-origin: left top;
+        border-radius: 5px;
+        background-color: #36AB19;
+    }
+
+    .checkbox label::after{
+        top: 81px;
+        left: 19px;
+        height: 0;
+        transform: rotate(-45deg);
+    }
+
+    .checkbox label::before{
+        top: 123px;
+        left: 62px;
+        height: 0px;
+        transform: rotate(-135deg);
+        box-shadow: 0 0 0 5px #678;
+    }
+
+    .checkbox input[type="checkbox"]:checked + label{
+        border-color: #36ab19;
+    }
+
+    .checkbox input[type="checkbox"]:checked + label::after{
+        height: 60px;
+        transition: height 0.3s linear;
+    }
+
+    .checkbox input[type="checkbox"]:checked + label::before{
+        height: 150px;
+        transition: height 0.5s 0.3s linear;
+    }
+
+
+    </style>
+</head>
+<body>
+<div class="cb_area">
+    <div class="checkbox">
+        <input type="checkbox" id="checkBox">
+        <label for="checkBox"></label>
+    </div>
+</div>
+<script>
+
+</script>
+</body>
+</html>

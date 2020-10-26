@@ -1,0 +1,484 @@
+高德地图
+
+	   - 选择器 o
+jquery - 事件   x
+	   - ajax  x
+	   - 动画   x
+
+
+高德地图的 第一个应用 创建高德地图
+
+1.申请key值 去官网
+
+2.https://webapi.amap.com/maps?v=1.4.11&key=e22196035aaa10db3b0b6eb1ab64619e
+
+3.有个div容器
+
+4.创建地图 new AMap.Map('容器的名字')；
+
+zoom : 11
+center : [120,23]
+
+
+getZoom()    获取地图的级别
+getCenter(); 获取地图的中心位置
+
+
+on('moveend') //地图移动结束时
+on('zoomend') //地图级别发生改变时 
+
+Zoom 的数字越大 显示的越精细 越小显示的范围越大
+setZoom 可以手动去设定他的级别
+
+setCenter([]) 放入 坐标
+setZoomAndCenter(zoom,[])
+
+
+
+北京 - 大兴区/朝阳区/丰台区
+
+获取行政区 
+map.getCity(function(info){
+	info 当前中心点的行政区
+});
+
+
+设置行政区
+map.setCity('字符串') 想让地图到达该地区的中心点
+
+获取地图的范围
+
+getBounds().northeast //右上角的坐标
+getBounds().southwest //左下角的坐标
+
+
+设置地图的范围
+var myBounds = new AMap.Bounds(左下角坐标的数组，右上角坐标的数组)
+map.setBounds(myBounds) //但是不是特别精准，会以它觉得最好的方式去显示
+
+设定显示范围
+getBounds() // northeast.P / R  southwest.P / R
+setLimitBounds() ;
+
+清除设定的显示范围
+clearLimitBounds();
+
+地图的平移
+panBy(x,y)  x代表向左平移多少像素  / y代表向上平移多少像素
+panTo([x坐标，y坐标]) 地图会直接平移到这个位置
+
+获取鼠标的经纬度
+
+利用事件对象
+
+e.lnglat.lng / lat 
+
+设置地图鼠标的默认样式
+setDefaultCursor('样式')
+cursor : 里面所有的样式都可以
+
+地图搜索
+
+AMap.plugin('AMap.Autocomplete',function(){
+	
+	new AMap.Autocomplete().search(要搜索的内容,function(status,data){
+		console.log(data 搜索出来的数据)
+	})
+})
+
+加载插件的方式 有两种
+https://webapi.amap.com/maps?v=1.4.11&key=e22196035aaa10db3b0b6eb1ab64619e&plugin=AMap.Autocomplete
+
+new AMap.Autocomplete({
+    input:'searchText'
+});
+
+searchText 《-》 id名
+
+POI 缩写
+
+Point of Interest
+兴趣点
+
+
+AMap.service(['AMap.PlaceSearch'],function(){
+	new AMap.PlaceSearch({
+		pageSize:5, //当页一共显示多少条
+        pageIndex:1, //当前第几页
+        city:'010', //兴趣点的城市
+        citylimit:true, //是否限制在设定的城内搜索
+        map:map, //展示在哪个地图里
+        panel:'setCenterNode' //放在哪个元素下
+	})
+})
+
+必须在服务器下 不然搜索到的 图片出不来
+
+给地图的元素加上事件
+AMap.event.addListener(searchNode,'select',function(e){
+  //  console.log(e);
+    placeSearch.search(e.poi.name)
+});  
+
+搜索周边
+new AMap.PlaceSearch({
+    type:'住宿', //搜索的结果的过滤 结果类型
+    pageSize:5,
+    pageIndex:1,
+    city:'010',
+    citylimit:true,
+    map:map, //展示在哪个地图里
+    panel:'setCenterNode' //放在哪个元素下
+}).searchNearBy('北京',[116.379391,39.861536],1000,function(){});
+
+
+
+https://a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png
+
+标记
+var marker = new AMap.Marker({
+    icon:'https://a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png', //标记的图标
+    position:[e.lnglat.lng,e.lnglat.lat], //标记的坐标
+    offset:new AMap.Pixel(-25,-25) // 像素的偏差值
+});
+
+marker.setMap(map);
+
+自定义标记图标
+
+var mk1 = new AMap.Icon({
+    size:new AMap.Size(500,500), //图标大小
+    image:'./1.jpg', //图片地址
+    imageSize:new AMap.Size(100,100) //最终在map里面显示的大小
+//  imageOffset:new AMap.Pixel(-50,-50) //裁剪 偏差值
+});
+
+var marker = new AMap.Marker({
+    position:[116.379391,39.861536],
+    icon:mk1
+});
+
+
+map.add([marker])
+
+删除标记的方法
+
+marker.setMap(null);
+
+map.remove([marker]);
+
+缩放比例尺控件
+
+plugin=AMap.scale,AMap.ToolBar;
+
+
+map.addControl(new AMap.scale());
+map.addControl(new AMap.ToolBar());
+
+3d地图
+
+var map = new AMap.Map('container',{
+    zoom:17,
+    pitch:90,
+    center:[116.379391,39.861536],
+    viewMode:'3D', //变成了3d 地图了
+    buildingAnimation:true // 可以让显示的建筑物变成动画现实
+});
+
+
+map.addControl(new AMap.ControlBar({
+    showZoomBar:true, // 显示 zoom条控件
+   // showControlButton:true,// 可以取消 倾斜旋转角度的按钮
+    position:{ //控件的定位
+        right:'50px',
+        top:'30px'
+    }
+}))
+
+驾驶导航
+Driving  控件名称就是AMap.Driving直接加到plugin=后面即可
+
+new AMap.Driving({
+    map:map,
+    panel:'panel'
+    }).search([
+        {keyword:'广州南站',city:'北京'},
+        {keyword:'广州东站',city:'北京'}
+    ],function(status,data){
+        console.log(data);
+ })
+
+
+通过经纬度 来进行导航
+
+new AMap.Driving({
+    map:map,
+    panel:'panel'
+    }).search(new AMap.LngLat(startX,startY),new AMap.LngLat(endX,endY),function(status,data){
+        console.log(data);
+})
+
+
+步行路线的规划
+
+AMap.Walking
+
+new AMap.Walking({
+    map:map,
+    panel:'panel'
+    }).search([
+        {keyword:起点,city:'北京'},
+        {keyword:终点,city:'北京'}
+    ],function(status,data){
+        console.log(data);
+ })
+
+
+步行路线的坐标规划
+
+new AMap.Walking({
+    map:map,
+    panel:'panel'
+    }).search([x,y],[x,y],function(status,data){
+        console.log(data);
+})
+
+
+货车路线规划 多点
+
+AMap.TruckDriving 引入这个插件
+
+new AMap.TruckDriving({
+        map:map,
+        panel:'panel',
+        city:'beijing',//城市
+        size:1 //大小
+    }).search([{lnglat:[116.379391,39.861536]},{lnglat:[116.979391,39.161536]},{lnglat:[116.579391,40.861536]}],function(status,data){
+        console.log(data);
+});
+
+
+new AMap.TruckDriving({
+        map:map,
+        panel:'panel',
+        city:'beijing',//城市
+        size:1 //大小
+    }).search([{
+        keyword:'起点'
+    },
+    {
+        keyword:'途径点'
+    }
+    {
+        keyword:'途径点'
+    }
+    {
+        keyword:'终点'
+    }],function(status,data){
+        console.log(data);
+});
+
+骑行路线规划
+new AMap.Riding({
+    map:map,
+    panel:'panel'
+}).search([
+    {keyword:startNode.value,city:'北京'}, //起点
+    {keyword:endNode.value,city:'北京'} //终点 
+    //不能中间有途径
+],function(status,data){
+    console.log(data);
+})
+
+
+
+new AMap.Riding({
+    map:map,
+    panel:'panel'
+    }).search(new AMap.LngLat(startX,startY),new AMap.LngLat(endX,endY),function(status,data){
+        console.log(data);
+})
+
+地铁+公交的导航方式
+
+AMap.Transfer
+
+new AMap.Transfer({
+    map:map,
+    panel:'panel'
+    }).search([
+        {keyword:起始点,city:'北京'},
+        {keyword:终点,city:'北京'}
+        //只支持数组的前两个内容
+    ],function(status,data){
+        console.log(data);
+})
+
+new AMap.Transfer({
+    map:map,
+    panel:'panel',
+    city:'北京' //city 一定要加上 城市  如果咱们导航的地址比较偏僻 也不可以
+    }).search(new AMap.LngLat(arr[0],arr[1]),new AMap.LngLat(e.lnglat.R,e.lnglat.P),function(status,data){
+        console.log(data);
+})
+
+地图类型的切换
+AMap.MapType 引入这个插件
+map.addControl(new AMap.MapType({
+    defaultType:1,//0 默认 1代表的是卫星
+    showRoad:true //显示路况
+}));
+
+常用的插件 
+鹰眼插件 OverView
+map.addControl(new AMap.OverView());
+比例尺插件  Scale
+map.addControl(new AMap.Scale());
+工具条插件，可以控制地图缩放和平移  TollBar
+map.addControl(new AMap.ToolBar());
+
+
+控件的添加
+
+show()
+
+控件的删除
+
+hide();
+
+
+事件
+
+地图加载完成 
+
+map.on('complete',function(){
+    console.log('ok')
+    //地图加载完成会触发的函数
+})
+
+
+地图显示等级改变开始
+zoomstart
+地图显示等级改变结束
+zoomend
+
+
+中心点移动中 不断触发
+map.on('mapmove',function(){
+    console.log('中心点移动中.');
+});
+
+地图中心点开始移动
+map.on('movestart',function(){
+    console.log('地图中心点开始移动');
+});
+
+地图中心点移动结束
+map.on('moveend',function(){
+    console.log('地图中心点移动结束');
+});
+
+地图容器大小发生改变时
+map.on('resize',function(){
+    console.log('容器大小改变中');
+});
+
+覆盖物与地图的交互
+//覆盖物
+var text = new AMap.Text({
+    text:'覆盖物事件',
+    position:[116.379391,39.861536]
+});
+
+//鼠标移入覆盖物
+text.on('mouseover',function(){
+    console.log('覆盖物移入');
+});
+//鼠标移出覆盖物
+text.on('mouseout',function(){
+    console.log('覆盖物移出');
+});
+
+//鼠标在覆盖物上移动
+text.on('mousemove',function(){
+    console.log('覆盖物上移动鼠标');
+});
+
+插入矢量图
+创建圆形矢量图
+var circle = new AMap.Circle({
+    center:[116.379391,39.861536],
+    raduis:1000
+});
+将矢量图插入地图中
+circle.setMap(map);
+//圆形的矢量图
+
+创建长方形矢量图
+var rectangle = new AMap.Rectangle({
+    bounds:new AMap.Bounds(new AMap.LngLat(116.379391,39.861536),new AMap.LngLat(117.379391,40.861536))
+});
+将矢量图插入地图中
+rectangle.setMap(map);
+//长方形的矢量图
+
+
+hide()隐藏
+show()显示
+
+右键菜单
+
+//创建一个右键菜单
+var contextmenu = new AMap.ContextMenu();
+
+
+//右键的第一个菜单
+contextmenu.addItem('放大一级',function(){
+    map.zoomIn();
+},0);
+
+//右键的第二个菜单
+contextmenu.addItem('缩小一级',function(){
+    map.zoomOut();
+},1);
+
+
+//给地图绑定右键
+map.on('rightclick',function(e){
+    //打开右键 
+    //map 在哪个地图里
+    //参数2 - 位置
+    contextmenu.open(map,e.lnglat);
+
+    setTimeout(function(){
+        contextmenu.close();
+    },3000);
+    // 关闭右键菜单
+});
+
+DOM事件绑定
+AMap.event.addDomListener （绑定的元素(使用js事先选好)，绑定的事件名（需要加"""click"、"mousedown"），函数）
+
+DOM事件解除绑定
+AMap.event.removeListener (要解除绑定函数名)
+
+
+addListener/on/emit
+//变量记录点击几次
+var count = 0;
+
+//点击事件
+var _onClick = function(){
+    //事件派发 也可以说是变量的改变
+    map.emit('count',{count:count += 1});
+};
+//监听的变量发生改变时触发的函数
+var _onCount = function(){
+    console.log(count);
+};
+//监听的变量发生改变时
+map.on('count',_onCount);
+
+AMap.event.addListener(map,'click',_onClick);
+
+

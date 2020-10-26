@@ -1,0 +1,125 @@
+sass   css扩展语言
+一、变量
+①定义方式：$+变量名   ：  值    例如：$baseColor:#ff00ee;
+②变量可以和字符串进行加减： $strUrl:'hello.jpg'     background-image:url('./img'+$strUrl);
+③变量还可以进行模板字符串方式进行合并: $strUrl:'hello.jpg'   background-image:url('./img#{'$strUrl}');
+④变量具有作用域：在{}内定义的变量，外部取不到，如果想要在外部或者全局拿到，
+则需要在声明后面加上 !global     $color:#f00 !global;
+如果不想变量被后面声明的同名变量所覆盖：可以在后面加上  ！default
+
+二、import规则
+将其他scss加入并编译：@import 文件名    （注意这里不要加上扩展名.scss）
+
+三、数据类型
+①number类型：$width:300px;   $zindex:2;
+②color类型：  $color:#ff9900;
+③string类型：  $url:'./images/'    使用：background-image:url('#{$url}hello.jpg')
+④list类型：    $list:(300px,500px,100px,'./images/')   
+要取其中某一项：nth($list,index)   这里index表示索引，从1开始计算而不是0！比如要500px:   nth($list,2)
+如果要去某一项的索引: index($list,对应数据)   比如要求100px的索引： index($list,100px)
+⑤map类型：  $map:(top:1px,left:2px,bottom:3px);
+获取某一项：map-get($map,top)
+
+四、基本运算
+可以正常进行+-*/，在进行*/时最好加上括号  可以跨越单位进行运算
+
+五、代码复用
+代码大量重复时，可以将重复代码 @mixin     在需要的地方@include即可：
+重复的代码：@mixin sample{color:red}           用到的地方：.div{@include sample}
+嵌套@mixin内部也可以进行@include
+mixin和include还可以运用参数的形式：
+@mixin sample($color,$size){color:$color;font-size:$size}    .div{@include sample(blue,15px)}
+
+六、继承
+①简单继承   b的代码有部分和a相同：b{@extend a}
+②链式继承   循环继承c继承b，b继承a，则c也会继承a
+
+七、嵌套
+①html结构上嵌套的元素可以css可以嵌套写：
+html结构：<div class='div1'><p class='p1'><div class='div2'></div></p></div>
+scss:  
+.div1{
+     color:red;
+     font-size:12px;
+     .p1{
+            border:1px solid #ff0;
+            .div2{
+                      padding:15px
+             }
+     }
+}
+如果需要父级元素作为限制条件，可以用&.代替父级元素
+
+② css属性名嵌套也可以嵌套写：
+比如font-size，font-weight等：
+font{size:15px;weight:bold}
+
+八、条件控制
+①each遍历map类型：
+@each $key  ,  $value in $map{
+     .....
+}
+②for遍历list类型：
+@for $i from 1 through length($list){
+   ....
+}
+
+九、函数
+①Number函数：
+percentage($num)   转化成百分比
+round($num)     四舍五入
+ceil($num)      上舍入
+floor($num)     下舍出
+abs($num)       绝对值
+min($num....)       最小值
+max($num.....)       最大值
+random(x)              0~x随机数 
+
+②list函数：
+length($list)    获取数组长度
+nth($list,$n)     获取对应下标的元素，下标从1开始
+set-nth($list,$n,$value)      替换指定下标的元素
+join($list,$list2)        拼接数组
+append($list1,$val,[$separator])       从数组尾部添加元素
+index($list,$value)     返回数组的索引
+
+③string函数：
+unquote($string)      去除引号
+quote($string)          添加引号
+str-length($string)      获取字符串的长度
+str-insert($string,$insert,$index)     在指定位置插入字符
+str-index($string,$substring)      返回指定字符在字符串的位置
+to-upper-case($string)        转换成大写
+to-lower-case($string)       转换成小写
+
+④map函数：
+map-get($map,$key)        根据给的key值，返回相关的值
+map-merge($map1,$map2)    将两个map合并
+map-remove($map,$key)     从map中删除一个key并返回一个新map
+map-keys($map)         返回map中所有的key
+map-values($map)       返回map中所有的value
+map-has-key($map,$key)    根据给定的key判断是否有对应的value
+keywords($args)        返回一个函数的参数，这个参数可以动态的设置key和value
+
+⑤自定义函数
+定义：@function 名字($x){
+	@return $x
+}
+使用:  名字($index)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

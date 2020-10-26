@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script>
+        //inherit继承方法
+        function inherit(Target, Origin) {
+            function F() {};
+            F.prototype = Origin.prototype;
+            Target.prototype = new F();
+        }
+
+
+        //  对象的深度克隆方法 
+        function deepClone(origin, target) {
+            var target = target || [];
+            var toStr = Object.prototype.toString;
+            var arrStr = "[object Array]";
+            for (var prop in origin) {
+                if (origin.hasOwnProperty(prop)) {
+                    if (typeof (origin[prop]) == 'object') {
+                        // if (toStr.call(origin[prop]) == arrStr) {
+                        //     target[prop] = [];
+                        // } else {
+                        //     target[prop] = {};
+                        // }
+                        target[prop] = (toStr.call(origin[prop]) == arrStr) ? target[prop] = [] : target[prop] = {};
+                        deepClone(origin[prop], target[prop]);
+                    } else {
+                        target[prop] = origin[prop];
+                    }
+                }
+            }
+            return target;
+        }
+
+
+        var person = {
+            name: "liu",
+            hobbit: {
+                chi: "shit",
+                he: "water"
+            },
+            wife: ["xiaoliu", "xiaoli"],
+
+        }
+
+        // type展示所有类型方法 
+
+        function type(target) {
+            var template = {
+                "[object Array]": "array",
+                "[object Object]": "object",
+                "[object Number]": "number -- object",
+                "[object String]": "string -- object",
+                "[object Boolean]": "boolean -- object",
+            }
+
+            if (target === null) {
+                return "null";
+            }
+            if (typeof (target) == 'object') {
+                var str = Object.prototype.toString.call(target)
+                return template[str];
+            } else {
+                return typeof (target);
+            }
+        }
+
+
+        // arr.unique给数组去重，在原型链上编程 
+
+        Array.prototype.unique = function () {
+            var temp = {};
+            var len = this.length;
+            var arr = [];
+            for (var i = 0; i < len; i++) {
+                if (!temp[this[i]]) {
+                    temp[this[i]] = "abc";
+                    arr.push(this[i]);
+                }
+            }
+            return arr;
+        }
+
+
+        // deleteSame(str)字符串去重
+
+        function deleteSame(str) {
+            var obj = {};
+            var arr = [];
+            if (typeof (str) == "string") {
+                for (var i = 0; i < str.length; i++) {
+                    if (!obj[str[i]]) {
+                        obj[str[i]] = "abc";
+                        arr.push(str[i]);
+                    }
+                }
+                var newArr = arr.join("");
+                return newArr;
+            } else {
+                return "please input a string!!!"
+            }
+        }
+
+
+        // getScrollOffset 获取滚动条滚动距离
+
+        function getScrollOffset() {
+            if (window.pageXOffset) {
+                return {
+                    x: window.pageXOffset,
+                    y: window.pageYOffset
+                }
+            } else {
+                return {
+                    x: document.body.scrollLeft + document.documentElement.scrollLeft,
+                    y: document.body.scrollTop + document.documentElement.scrollTop
+                }
+            }
+        }
+
+
+        // getViewportOffset()获取窗口尺寸
+
+        function getViewportOffset() {
+            if (window.innerWidth) {
+                return {
+                    w: window.innerWidth,
+                    h: window.innerHeight
+                }
+            } else {
+                if (document.compatMode === "BackCompat") {
+                    return {
+                        w: document.body.clientWidth,
+                        h: document.body.clientHeight
+                    }
+                } else {
+                    return {
+                        w: document.documentElement.clientWidth,
+                        h: document.documentElement.clientHeight
+                    }
+                }
+            }
+        }
+
+        // getStyle()封装获取css的方法
+        function getStyle(elem, prop) {
+            if (window.getComputedStyle) {
+                return window.getComputedStyle(elem, null)[prop];
+            } else {
+                return elem.currentStyle[prop];
+            }
+        }
+
+
+        // addEvent()给一个事件对象添加一个该事件类型的处理函数
+        function addEvent(elem, type, handle) {
+            if (elem.addEventListener) {
+                elem.addEventListener(type, handle, flase);
+            } else if (elem.attachEvent) {
+                elem.attachEvent('on' + type, function () {
+                    handle.call(elem);
+                })
+            } else {
+                elem['on' + type] = handle;
+            }
+        }
+
+
+        // stopBubble(event)取消冒泡
+        function stopBubble(event) {
+            if (event, stopPropagation) {
+                event.stopPropagation();
+            } else {
+                event.cancelBubble = true;
+            }
+        }
+
+
+        // cancelHandler()阻止默认事件
+        function cancelHandler() {
+            if (event.preventDefault) {
+                event.preventDefault();
+            } else {
+                event.returnValue = false;
+            }
+        }
+
+
+        //loadScript(url,callback)异步加载js
+        function loadScript(url, callback) { //这里的callback要用函数引用包裹住想要使用的函数,例如function () {test();}
+            var script = document.createElement('script');
+            if (script.readyState) {
+                script.onreadystatechange = function () {
+                    if (script.readyState == "complete" || script.readyState == "loaded") {
+                        callback();
+                    }
+                }
+            } else {
+                script.onload = function () {
+                    callback();
+                }
+            }
+            script.src = url;
+            document.head.appendChild(script);
+        }
+
+        //正则表达式将常规阿拉伯数字替换成银行形式（带，的）
+        var str = "10000000";
+        var reg = /(?=(\B)(\d{3})+$)/g;
+        console.log(str.replace(reg, ','));
+
+        //Ajax第一步兼容性创建XMLHttpRequest对象
+        function createXHR() {
+            //IE7.0+,firefox,safari,google chrome,opera
+            if (typeof XMLHttpRequest != 'undefined') {
+                return new XMLHttpRequest();
+            } else if (typeof ActiveXObject != 'undefined') {
+                //IE7.0-
+                var xhrArr = ['Microsoft.XMLHTTP',
+                    'MSXML2.XMLHTTP.6.0', 'MSXML2.XMLHTTP.5.0',
+                    'MSXML2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0',
+                    'MSXML2.XMLHTTP.2.0'
+                ];
+                var len = xhrArr.length,
+                    xhr;
+                for (var i = 0; i < len; i++) {
+                    try {
+                        xhr = new ActiveXObject(xhrArr[i]);
+                        break;
+                    } catch (ex) {
+
+                    }
+                }
+                return xhr;
+            } else {
+                throw new Error('No XHR object')
+            }
+        }
+
+        //getJSONP(url,callback)使用jsonp跨域url处理
+        function getJSONP(url, callback) {
+            if (!url) {
+                return;
+            } else {
+                var a = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'],
+                    r1 = Math.floor(Math.random() * 10),
+                    r2 = Math.floor(Math.random() * 10),
+                    r3 = Math.floor(Math.random() * 10),
+                    name = 'getJSONP' + a[r1] + a[r2] + a[r3],
+                    cbname = 'getJSONP.' + name,
+                    reg = /'?'/;
+                if (reg.test(url) === false) {
+                    url += '?jsonp=' + cbname;
+                } else {
+                    url += '&jsonp=' + cbname;
+                }
+                var script = document.createElement('script');
+                getJSONP[name] = function (data) {
+                    try {
+                        callback && callback(data);
+                    } catch (e) {
+                        console.log(e);
+                    } finally {
+                        delete getJSONP[name];
+                        script.parentNode.removeChild(script);
+                    }
+                }
+                script.src = url;
+                document.getElementsByTagName('head')[0].appendChild(script);
+            }
+        }
+
+        //仿jQuery封装$.ajax({})进行ajax请求
+        var $ = {
+            ajax: function (options) {
+                var xhr = null,
+                    url = options.url,
+                    method = options.method || 'get',
+                    async = typeof (options.async) === 'undefined' ? true : options.async,
+                        data = options.data || null,
+                        params = '',
+                        callback = options.success,
+                        error = options.error;
+                if (data) {
+                    for (var i in data) {
+                        params += i + '=' + data[i] + '&';
+                    }
+                    var reg = /['&']$/;
+                    params = params.replace(reg, '');
+                }
+                //根据method 的值改变url
+                if (method == 'get') {
+                    url += '?' + params;
+
+                }
+                // 创建SMLHttpRequest对象;
+                if (typeof XMLHttpRequest != 'undefined') {
+                    xhr = new XMLHttpRequest();
+                } else if (typeof ActiveXObject != 'undefined') {
+                    //IE7.0-
+                    var xhrArr = ['Microsoft.XMLHTTP',
+                        'MSXML2.XMLHTTP.6.0', 'MSXML2.XMLHTTP.5.0',
+                        'MSXML2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0',
+                        'MSXML2.XMLHTTP.2.0'
+                    ];
+                    var len = xhrArr.length;
+                    for (var i = 0; i < len; i++) {
+                        try {
+                            xhr = new ActiveXObject(xhrArr[i]);
+                            break;
+                        } catch (ex) {
+
+                        }
+                    }
+                } else {
+                    throw new Error('No XHR object')
+                }
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304) {
+                            callback && callback(JSON.parse(xhr.responseText));
+                        } else {
+                            error && error();
+                        }
+                    }
+                }
+                xhr.open(method, url, async);
+                xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhr.send(params);
+            }
+        }
+
+        // 设置rem(就是根据视口宽设置html字体大小，等于视口宽/10)
+        //别忘了设置window.addEventListener('click',function(){setRem();},false);
+        function setRem(){
+            const docEl = document.documentElement;
+            let winWidth = docEl.offsetWidth;
+            docEl.style.fontSize = winWidth / 10 + 'px';
+        }
+    </script>
+
+</body>
+
+</html>

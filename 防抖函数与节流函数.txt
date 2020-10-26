@@ -1,0 +1,36 @@
+防抖函数debounce：限定时间内多次触发的函数只会执行最后一次触发的，
+常用于搜索提示等多次发送的请求
+function debounce(func , delay){
+	let timer
+	retrun function(){
+		let context = this
+		let args = arguments
+		if(timer) clearTimeout(timer)
+		timer = setTimeout(() => {
+			func.apply(this,args)
+		},delay)
+	}
+}
+使用方式：将多次触发的函数传入bounce中得到新生成的函数，在事件监听中触发新生成的函数
+比如：arr函数会在input事件多次触发：
+const arr2 = bounce(arr,200)
+xxx.on('input',() => { arr2() })
+
+
+节流函数throttle：连续触发事件但只在n秒内执行一次函数
+function throttle(func , wait){
+	let timeout
+	return function(){
+		let context = this
+		let args = arguments
+		if(!timeout) {
+			timeout = setTimeout(() => {
+				timeout = null
+				func.apply(context,args)
+				},wait)
+			}
+		}
+	}
+
+
+

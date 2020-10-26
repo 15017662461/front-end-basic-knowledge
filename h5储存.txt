@@ -1,0 +1,120 @@
+localStorage 和 sessionStorage
+临时储存 
+
+可以在f12  application 中查看
+
+localStorage.setItem(key,value)/sessionStorage.setItem(key,value)
+localStorage.getItem(key);/sessionStorage.getItem(key)
+
+对象[key]=value
+对象.key=value
+
+这种方式的储存必须要同源，即同ip地址，同端口，且value必须要是字符串形式，可以用JSON.stringify()来转换成字符串
+
+localStorage.removeItem(key)/ sessionStorage.removeItem(key)   删除key
+
+localStorage.clear()/sessionStorage.clear()  
+可以直接把所有的key 都清空
+
+
+localStorage.length/sessionStorage.length 
+直接可以查看储存的个数
+
+localStorage 没有储存时间
+sessionStorage 网页会话结束时失效
+网页关闭时失效 、 刷新没有问题
+
+储存时尽量使用try，catch语句避免抛出错误
+
+只能储存字符串
+
+HTML5 - 数据库
+indexedDB
+
+先会创建数据库
+indexedDB.open('随便起个名字',版本号)  例如var request = indexedDB.open('testDB',1)
+console.log(request)就可以找到这个创建的数据库
+
+onsuccess 数据库创建或打开成功     request.onsuccess = function(){};
+onerror 打开失败 （版本号不能降低） request.onerror = function(){};
+onupgradeneeded 版本升级时触发的函数   request.onupgradeneended = function(){}
+
+request.result.createObjectStore('表的名字',设置主键的方法); 创建一个表 ,必须要在版本升级时的函数内才能创建表
+
+设置主键的方法
+{autoIncrement: true} 从1开始主键自递增
+{keyPath:数据中的字段}  以数据中指定的字段作为主键值
+
+向表里添加数据：
+第一步选择需要打开的表：var transaction = request.result.transcation(['表1的名字','表2的名字'...],'readwrite/readonly')
+第二步确定具体需要写入 的表： var store = transaction.objectStore('确定的表的名字');
+第三步开始写入数据：store.add(数据)
+
+readwrite   读写模式
+readonly    只能读不能写
+
+表的增删改查：
+添加数据：  ①store.add()  初始化的时候往里面初始填写的数据
+	   ②store.put()   初始之后继续添加数据，
+查看、获取数据：  ① var a = store.get(对应的主键值)  具体数据存在a.result里面
+                             ② var a = getAll() 可以获取所有的表中的数据    数据存在a.result里面
+删除数据:       ①  删除单个数据store.delete(数据对应的主键值)
+	      ② 删除所有数据 store.clear()
+			
+var abc = store.put('male');
+abc.onsuccess = function (){}  如果指令成功了执行的回调函数
+abc.onerror = function (){}    如果指令失败了执行的回调函数
+abc.result      可以看到相关的数据
+
+
+
+索引
+store.createIndex('表名称','数据key值',{unique:true});
+唯一性
+
+
+var index = store.index(表的名称).get(key值的名称).onsuccess = function(){
+	e.target.result 找到的数据的内容
+}
+
+游标
+var requestNode = store.openCursor(IDBKeyRange.only(需要的数据的主键值));
+IDBKeyRange.only(需要的数据的主键值)//参数一是范围
+IDBKeyRange.upperBound (200,true/false)// 小于等于之前的 true 不包含自己的  false 包含自己的
+IDBKeyRange.lowerBound (203,true/false)// 大于等于之前的 true 不包含自己的  false 包含自己的
+IDBKeyRange.bound (200,203,true/false,true/false)大于等于200的 小于等于203的 如果有参数 3 和 4 就是true 和 false
+true 不包含自己的  false 包含自己的
+参数3 对应着参数1 参数4 对应着参数2
+
+
+requestNode.onsuccess = function(){
+	console.log(requestNode.result.value)
+	//最后获取的值
+};
+
+
+结合使用
+var index = store.index('test3');
+var requestNode = index.openCursor(IDBKeyRange.upperBound(31));
+
+update()更新数据
+delete()删除数据
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,565 @@
+js的三大部分：ECMAscript    DOM(操作HTML)   BOM(操作浏览器)
+浏览器内核：渲染引擎（语法规则和渲染）、js引擎
+
+js的引入：
+一、页面级的js
+<script type="text/javascript"> .......  </script>
+二、外部文件引入js
+<script type="text/javascript" src="....js"></script>
+
+js的错误：
+1.syntaxError  语法解析错误    错误发生后代码一行都不会执行
+2.ReferenceError   非法或不能识别的引用数值      错误发生后错误之前的代码正常执行，错误往后的代码不会执行
+3.EvalError   eval()的使用和定义不一致
+4.RangeError    数值越界
+5.TypeError   操作数类型错误
+6.URIError   URI处理函数使用不当
+
+js基本语法
+ECMAScript部分
+1.  变量的类型： js的变量统一用var a =  来声明，包括原始值和引用值。
+原始值放在stack（栈），放入后不能更改，只能重新赋值
+引用值放在heap（堆），放入后可以更改也可以重新赋值
+原始值的变量类型有以下五种：
+①Number(数字类型):  var a = 1;
+②String(字符串类型): var a = "javascript"; 用双引号包裹着的就是字符串类型，所以var a = "123"也是字符串类型
+③Boolean(布尔值):var b = false/true;
+④undefined:var a =undefined;a未定义
+⑤null(占位值):var b = null;
+如果Number结果超过了js的语法范围，正无穷表示为Infinity   负无穷表示为-Infinity
+
+
+引用值有若干种：数组array、对象.....
+2.  运算符：
++：可以进行数学运算还可以用于字符串连接，任何数据类型+字符串最后都会变成字符串
+-，*，/，%（求余数），=，（）：优先级=最弱，（）优先级较高
+var a = 10;    doucument.write(a ++);    doucument.write(a);第一个打印出来的是10，第二个打印出来的是11，这是因为a++是先执行打印a在进行a+1；
+但如果是++ a的话则是先执行a+1在打印a的值    
+a = 10；b = ++a - 1 + a++ =11-1+11=21；a = 12；
+综上所述：参与运算时 a++是a参与运算，然后a本身的值+1 ； ++a是a+1后参与运算，然后a本身的值+1
+a %= b + 1  相当于   a = a%（b+1）
+> < 比较运算符：当比较字符串（带“”）时，比较的是相对应每一位的ASCII码，返回的值是布尔值
+逻辑运算符：与&&、或||、非！。undefined、null、“”、0、false、NaN转换为布尔值为false，其余数字转换为布尔值为true
+var a = 1 && 2;返回的值为2
+var a = 0 && 2;返回的值为0
+这是因为&&运算符在只有前后两个数值时，会先看第一个数值转换成布尔值，如果布尔值为false则返回第一个数值，如果布尔值为true，则返回第二个数值
+而||运算符看到true就返回数值，否则返回后面的数值
+
+3.   条件判断语句 
+①if 和 else if：if（score > 90）{document.write();}else if(score > 80 && score < 90){document.write();}else if(score >70 && score < 80 ){document.write();}....else{document.write();}
+if else if的条件语句中可以拥有多个else if 只能拥有一个if 和else
+②switch case(break)判断语句：判断的是switch括号里的内容与case括号里的内容，一致则执行case后的语句
+switch(n){case 1:document.write(1);break;case 2:document.write(2);break;}
+注意switch case必须要有break
+③continue：终止本次小循环直接进行下一个大循环
+例如：输出除了尾数是7的1—100的数
+for (var i = 1; i <= 100;  i ++){if (i % 10 == 7){continue;}document.write(i);}
+
+4.  循环语句
+for循环：for（i = 1; i < 10; i++）{n = n*2; }
+for(in)循环：用于遍历对象      for(var prop in obj){console.log(obj.[prop]);}
+如果不想遍历出原型的属性：for(var prop in obj){ if (obj.hasOwnProperty(prop)){console.log(obj[prop]);}}
+
+5.  输出方法
+document.write(a);这种方式是输出文档流在页面
+console.log（a）；这种方式是输出在控制台，这种方式更加好用
+如果需要在字符串内部加上变量比如array：'<div value="'+arra+'">'即用" '+  +' "将变量包裹起来
+
+6.  typeof 类型 (number string boolean obj undefined function)
+查看数据的类型 document.write(typeof("123"));
+当typeof(a)一个未定义的a时不会报错，会显示undefined
+
+7.  类型转换
+①Number(null)    将数据转换成数字类型     null--0   undefined--NaN   true--1   "a"/"b"...--NaN
+②parseInt(123.9,16)  后面的数表示进制，即123是16进制的数，转换成10进制的数，变成整数是将小数点后面的数字直接去掉而不是四舍五入
+parseInt("123px")最后会变成123，即parseInt(字符串)会舍弃字符串里面的字母，保留数字
+③parseFloat(123.999)转换成浮点型
+④String(123)  将数据转换成字符串类型，String.fromCharCode(),能够将ASICC码转换成相对应的字符串
+⑤Boolean(123)   将数据类型转换成布尔值   只有undefine、null、“”、0、false、NaN这六个值转换成布尔值是false其余都是true
+⑥123.toString(2)   将数据类型转换成2进制的字符串，注意undefined和null不能使用这种方法，会报错
+⑦isNaN("abc")   判断是不是NaN,返回值是false/true
+不发生类型转换：===  !==
+
+8.  函数的定义
+①函数的声明：function theFirstName() {}   这种方式定义的函数在调用时:  theFirstName();  且theFirstName.name = theFirstName
+②命名函数表达式：var test = function theFirstName() {}  这种方式定义的函数在调用时：test();  且test.name = theFirstName
+③匿名函数表达式：var text = function() {} 这种方式定义的函数在调用时：text（）； 且text.name = text
+javascript实参和形参可以不一样多，实参会储存在arguments中，形参用函数名.length表示
+示例：计算所有输入数字的和
+function sum(){
+	var submit = 0;
+	for(var i = 0;i < arguments.length;i ++){
+		submit += arguments[i];}
+	return submit;
+ }
+console.log(sum(5,4,3,2,1));
+
+9.  预编译
+①任何变量(无论是不是全局变量)如果未经声明就赋值，此变量就为全局对象（window）所有。
+②一切声明的全局变量，全是window的属性
+③预编译四部曲：函数体内1.创建AO对象；2.找形参和变量声明作为AO的属性名，并把值设置为undefined；
+3.将实参和形参统一；4.在函数体内找函数声明，值赋予同名变量
+如果是全局变量则创建GO（即window）并放在GO内；
+10. 作用域
+在函数创建声明的那一刻，会创建一个函数的作用域链a.[[scope]]
+在a函数被定义时，a.[[scope]]第0位会塞入一个GO（全局变量）
+在a函数被执行的前一刻，a.[[scope]]第0位会塞入AO，GO会掉入第1位
+11. 闭包
+当内部函数被保存到外部时，将会生成闭包。闭包会导致原有作用域链不释放，造成内存泄露
+function a(){
+var num = 100;
+      function b(){
+   num ++;
+   consloe.log(num);	
+      }
+return b;
+}
+var demo = a();
+demo();
+demo();
+这里demo函数在a的基础上生成，所以会拥有a 的AO:num = 100;在执行demo函数的时候，会使用到num = 100，并++，
+每次相加的结果都会保存且不会销毁，故第二次demo（）的结果是102，而如果把num = 100放在b函数内的话，两次的结果都是101；
+解决闭包的方法：
+对内部函数改成立即执行函数
+
+12. 立即执行函数（定义完后只执行一次，执行完事后立即释放）
+(function(形参){
+var a = 123;
+var b = 234;
+console.log(a + b);
+}(实参))
+
+13. 对象
+对象可以包含属性和方法，比如属性：name:May,age:22;   方法：push:function(){consloe.log()};
+注意：只有引用值有属性和方法，原始值没有属性和方法！！！
+对象的创建方法：①对象字面量  var obj = {}
+②构造函数   1）系统自带的构造函数  var obj = new Object();  2）自定义 function Abc(){this.name = "BMW";this.run = function(){this.health--;}}  var obj = new Abc();
+③var obj = Object.create（原型）；
+给对象调用和赋值：对象名.属性名（方法名），调用方法时要有括号.或者对象名['属性名']     obj['name']
+如果在对象内部调用或者改变自己的属性或者方法时，用this.属性名
+属性的增加、修改：对象名.属性名 = 值
+属性的删除：delete  对象名.属性名
+对象的属性名未定义就是用不会报错，会出现undefined
+遍历对象：for(in)循环     for(var prop in obj){console.log(obj[prop]);}
+如果不想遍历出原型的属性：for(var prop in obj){ if (obj.hasOwnProperty(prop)){console.log(obj[prop]);}}
+区别数组和对象的三种方法：
+①constructor    数组的constructor是array，对象的constructor是object
+②instanceof      数组  instanceof  对象返回值是true，对象  instanceof  数组返回值是false
+（优先）③toString    Object.prototype.toString.call([])返回值是array，Object.prototype.toString.call({})返回值是object
+修改对象属性的另一种方法：Object.defineProperty(对象名，属性名，{value：属性值，writable：true/false});
+要使得引用值不能被添加属性，但可以修改现有属性：Object.seal（对象名）;
+要使得引用值不能添加和修改属性，冻结起来：Object.freeze(对象名);
+
+
+14. 原型  prototype
+定义：原型是function对象的一个属性，它定义了构造函数制造出的对象的公共祖先
+例如：构造函数：function  Person（）{}，则Person.prototype是它的原型，是Person构造函数构造出来的所有对象的祖先
+Person.protype也是对象，可以通过Person.prototype.name来访问它的属性，这样，所有Person函数
+构造出来的对象都会拥有Person.prototype的所有属性，一旦Person函数内部的属性与prototype的属性相同，则取Person构造函数内的属性
+构造函数所有函数公有的属性可以写在Person.prototype = {}中
+原型内部会自带两个属性   constructor：function Person（）{}，__proto__:Object;
+constructor就是构造函数的名字
+A   instanceof  B  看A的原型链上有没有B的原型   
+
+15. call/aply
+作用：改变this的指向
+Person.call（obj）就会将Person里面所有的this都变成obj
+例如，有一个写好的方法：function Person(name,age,sex){this.name = name,this.age = age;this.sex = sex;}
+想要利用这个写好的方法创建一个新的方法，多了grade：
+function Student(name,age,sex,grade){Person.call(this, name,age,sex);this.grade = grade;} var student = new Student();
+apply的call的基本功能一样，但是apply后面传的实参要是数组形式的，即加【】即可
+
+16. 继承
+想要使得两个构造函数构造出来的对象继承
+function inherit (Target,Origin){
+Target.prototype = Origin.prototype;
+}这种方式有一个缺点，在更改Target 的原型时，Origin的原型也会随之更改，所以，创造出了另一种圣杯模式
+圣杯模式：（创造一个中间层）
+function inherit(Target,Origin){
+        function F(){};
+        F.prototype = Origin.prototype;
+        Target.prototype = new F();
+        Target.prototype.constructor = Target;
+        return Target
+}
+
+17.this
+①函数预编译过程中，this指向window
+②全局作用域里this指向的是window
+③call和apply可以改变this的指向
+④obj.function();其中function()里面的this指向obj，即谁调用这个方法，this指向的就是谁，
+如果没人调用这个方法，而这个方法执行，则this指向的是window
+便捷方法看this的指向：直接看函数执行的（）：（）的左边如果是.function，即存在函数的调用，则
+this指向的是调用的函数，如果（）左边没有.  则this指向的是window！！！
+例如：var obj = {eat : function(var a = 1;)}
+var aaa = obj.eat();
+var bbb = obj.eat;
+bbb();
+这里第一个var aaa由于（）左边是obj调用eat所以this指代的是obj
+第二个bbb（），（）左边是bbb没有调用函数，所以this指向的是window
+
+18. arguments.callee
+返回正被执行的function对象，常用于匿名函数/立即执行函数的递归执行
+例如：用立即执行函数求20的阶乘
+(function (n) {
+if (n == 1){return 1;}
+return n * arguments.callee(n - 1);
+} (20))
+
+19. function.caller
+返回调用该函数的函数
+例如：函数demo在函数test中被调用，则demo.caller返回值就是demo。
+如果在全局中被调用，则返回值是null
+、
+20. 三目运算符
+条件判断？是：否   并且会返回相应的值   
+例如：  var num = 1 < 0 ? 2 + 2 : 1 + 1     最后num = 2；
+
+21.math方法
+①Math.random();产生一个0到1之间的随机数，可以等于0但不可以等于1
+②Math.round(x);返回值是x四舍五入最接近的整数
+③Math.pow(x,y);返回值是x的y次幂   注意Math.exp(x) 返回e的x次幂
+④Math.sqrt(x);返回值是x的平方根
+⑤Math.abs(x);返回的是x的绝对值
+⑥Math.ceil(x);返回值是上舍入最接近的整数
+⑦Math.floor();返回值是x下舍出最接近的整数
+⑧Math.sin();Math.cos();返回正余弦值
+⑨Math.max(x,y,z)/Math.min(x,y,z)   返回xyz的最大值或最小值
+
+22. 数组
+数组的构造方法：①字面量：var arr = [1,2,3];
+②var arr = new Array(1,2,3);如果括号里有多个数字，这种方法跟字面量方法一致，如果括号内只有一个数字
+例如 var arr = new Array(10),创造出来的数组就是1长度为10的，每个数字都为undefined的数组
+数组的方法：
+一、改变原数组：
+①push方法：在数组最后一位添加数据的方法   arr.push(1,2,3);       
+②pop方法：把数组的最后一位剪切出去     arr.pop();
+③unshift方法：在数组第一位添加数据   arr.unshift(1,2,3);
+④shift方法：把数组的第一位剪切出去     arr.shift();
+⑤reverse方法：把数组倒过来    arr.reverse();
+⑥splice方法：arr(从第几位开始，截取多少的长度，在切口处添加的数据)    arr(1,2,5)从arr[1]开始，剪切两位，并在切口处添加数字5
+⑦sort方法：arr.sort(function (a , b)  { return a - b; } )  必须写两个形参，看返回值，当返回值为负数时，那么前面的数放在前面，为正数，那么后面的数在前面，为0，不动
+所以，sort方法是排序方法，如果要升序：arr.sort(function (a,b) {return a - b;})  如果要降序  arr.sort(function (a,b) { return b - a;})
+如果要乱序：arr.sort(function (a,b) {return Math.random - 0.5 ;})
+二、不改变原数组：
+①toString:把数组变成字符串形式
+②slice：slice(从第几位开始，截取到第几位) var newArr = arr.slice(1,2);
+③join：  arr.join("=")  把数组变成字符串，且每一位用=连接起来    常用于将数组转换成字符串
+④indexOf(查找的数字或对象,开始查找的起始位置)；  默认查找从头查找 如果查找不到返回值是-1
+⑤lastIndexOf()  方式与indexOf一致，只不过默认从末尾往前面查找
+
+23. 类数组
+属性要为索引属性(数字)，必须要有length，且最好加上push
+例如：类数组obj：
+var obj = {
+       '1' : 'a',
+       '2' : 'b',
+       '3' : 'c', 
+       'length' : 3,
+       'push' : Array.prototype.push
+}
+这个obj就是类数组，他同时也是对象
+
+24. try {} catch (e) {consloe.log(e.name + ":" + e.message);}
+在try里面发生的错误，不会执行try中错误后的代码，但会执行try...catch语句之后的代码
+而catch的作用就是捕捉try里面发生的第一个错误，并将错误信息和错误类型储存到e中
+其中e.message储存了错误信息，e.name储存了错误类型(名称)
+
+25. es5.0严格模式
+在想要用的地方写上"use strict"；(带引号和；)开启es5.0严格模式，这样es3.0模式冲突的代码将不可使用
+写在页面的最开始就代表整片代码都是es5.0，如果写在某一个函数内部就是在该函数内部使用es5.0严格模式
+es5.0不支持：
+with、arguments.callee、function.caller,变量赋值前必须声明，拒绝重复属性和参数
+
+26. 字符串方法
+①charAt(索引)    取出字符串相应位置的字符    str.charAt(1)取出str第二位
+②charCodeAt     取出字符串相应位置的字符编码   
+③split("")    按照“”中的内容将字符串拆分，并塞入数组中   常用这种方法将字符串转换成数组
+④toUpperCase() 和 toLowerCase()   将字符串转换成大写/小写
+
+27. 转义符号(\)
+①单纯的一个\具有转义的作用，可以将后面的那一个字符正常输出\"可以将"在字符串中正常输出
+同时由于字符串再输入的时候不允许换行，我们可以在换行的末尾加\就不会报错了
+②\n可以用来换行   换行符
+③\r行结束符号，在操作系统中回车键代表\r\n(行结束且换行)   回车符
+④\t缩进，一般情况下等于缩进四个空格
+
+28. 正则表达式(RegExp)，构成搜索模式的字符序列
+①创建方式：字面量创建：var reg = /abc/;后面还可以加i，m，g等
+构造函数：var reg = new RegExp( ""，"")第一个参数填规则，第二个参数填i、m、g等
+②修饰符：也就是第二个参数，i代表忽视大小写，g代表查找所有匹配，m代表执行多行匹配
+③表达式：[]一个方括号表示一位，var reg = /[0-9][A-z]/表示第一位是数字，第二位是字母
+表达式中加^表示非，var reg = /[^0-9]/表示非数字
+( | ）：var reg = /(a|b)/表示a或者b
+子表达式：()  筛选aabb形式的  reg = /(\w)\1(\w)\2/
+④元字符：
+var reg = /\w/   表示所有单词字符         var reg = /\W/表示所有非单词字符
+var reg = /\d/   表示所有数字                var reg = /\D/表示所有非数字
+var reg = /\s/   表示空白字符(包括\n \r \t)  var reg = /\S/表示所有非空白字符
+var reg = /\b/   表示单词边界                var reg = /\B/表示所有非单词边界
+var reg = /\n/   表示换行符，必须严格等于\n         
+var reg = /\r/   表示回车符，必须严格等于\r        
+var reg = /\t/   表示制表符(缩进)，必须严格等于\t        
+var reg = /\uxxxx/   表示以十六进制数xxxx规定的Unicode字符    中文/[\u4e00-\u9fa5]/  
+⑤量词：
+n+ 若干位 ：var reg = /\w+/   表示若干个单词字符
+n* 0个或者若干个：var reg = /\w*/     表示0个或者若干个单词字符
+n? 0个或者一个：var reg = /\w？/     表示0个或者一个单词字符
+n{X} x个:   var reg = /\w{5}/       表示5个单词字符
+n{X,Y} x~y个： var reg = /\w{1,5}/      表示1~5个单词字符
+n{X，}至少x个： var reg = /\w{2, }/      表示至少x个单词字符
+^n开头是n：   var reg = /^abc/       表示开头是abc
+n$结尾是n：     var reg = /abc$/      表示结尾是abc
+?=n 后面紧接着n    var reg = /a(?=5)/   表示后面紧接5的a
+?!n 后面没有紧接n    var reg = /5(?!r)/    表示后面没有紧接r的5
+⑥对象属性：
+global 就是在reg后面加的g，reg.global = true/false;
+ignoreCase就是后面加的i，reg.ignoreCase = true/false;
+multiline就是后面加的m，reg.multiline = true/false;
+source就是正则表达式的内容，reg.source = "\w";
+lastIndex
+⑦对象方法
+test方法，测试是否含有正则表达式中的内容，返回值是true或者false   reg.test("123");
+exec方法，检索字符中指定的值，返回该值，并确定其位置  var str = 'abc'  reg = /a/  
+这样reg.exec(str)返回的是a以及0
+⑧支持正则表达式的string对象的方法
+search   检索与正则表达式相匹配的值   str.search(reg);返回的是匹配到的位置
+match    找到一个或多个正则表达式的匹配    str.match(reg)  
+replace  替换与正则表达式匹配的子串    str.replace( , ) 第一个参数是需要被替换的，第二个是替换成的样子 
+split       按照正则表达式断开形成数组     str.split(reg)
+
+ES6部分
+1. ES6新的变量声明方法
+① let  
+let声明的变量值在当前块级作用域内（{}）有效，let声明的变量不能在同一个块作用域中被重复声明，但可以重复赋值
+不存在变量提升(即不会将变量的声明提升到最前面进行预编译)，在全局内用let声明的变量也是全局变量
+②const
+const与let类似，也是在当前块级作用域内有效，不能被反复声明，但是它还不可以被重复赋值！！！(引用值可以间接修改)
+而且const在声明变量的时候必须要赋值，不能单纯只声明
+如果要使得声明的引用值不能被添加，但可以被修改原有值：Object.seal(引用值的名字)
+如果要使声明的引用值不能被添加也不能被修改：Object.freeze(引用值的名字)
+总结：const与let的区别：let可以重复赋值，也可以先声明但不赋值；但const不可以被重复赋值，且声明时必须要赋值
+③声明对象属性的方法：Object.defineProperty(对象，'属性名'，属性的特性描述)
+1. 第一个参数表示想要添加属性的对象,如obj
+2. 第二个参数是添加的属性名称如"name"
+3. 属性的特性描述是重点，分为两种，一中是数据描述，另一种存取器描述
+数据描述：
+{
+   value(属性对应的值): 'liu',默认是undefined
+   writable(是否可以被重写): true/false, 默认是false
+   enumerable(是否可以被枚举，如for....in或者Object.keys()):true/false,默认是false
+   configurable(是否可以被删除或者修改特性描述):true/false,默认是false
+}
+存取器描述：
+{
+   get:function(){//当获取属性值时触发的函数,如return initValue},  不写则默认是undefined
+   set:function(value){//当设置属性值的时候触发的函数，例如initValue = value},不写则默认是undefined
+   wrtitable(当设置了get或者set方法则不允许使用):true/false,默认是false
+   value(当设置了get或者set方法则不允许使用):true/false,默认是undefiend
+   enumerable(是否可以被枚举，如for....in或者Object.keys()):true/false,默认是false
+   configurable(是否可以被删除或者修改特性描述):true/false,默认是false
+}  
+
+
+2.ES6变量的结构与赋值
+将值从数组或属性从对象提取到不同的变量中
+①数组的解构赋值
+简单的数组解构赋值：const arr  = [1,2,3,4]     const[ , ,a] = arr;这样a = 3，不需要的数可以用空格代替
+扩展运算符：要想将若干个数组不含[]的合并起来：const arrMain = [...arr1,...arr2,...arr3],我们把...称为扩展运算符
+解构赋值和扩展运算联合：我们要取出arr =[1,2,3]中的2和3：const [ ,...a]=arr，这样a就等于[2,3]
+默认值：如果存在就用存在的数，如果没有或者是undefined，就用给定的数  const[a,b,c=4,d=5]=[1,2,3],这样，c=3 d=5
+交换变量：交换ab的值  [a,b]=[b,a]
+②对象的解构赋值
+简单的对象解构赋值：const {name,age} = {name:'hua',age:1};注意这里属性名要相同，否则取出来将会是undefined
+如果对象里包含数组，我们只要数组的某一项：const {num:[ ,...a]} = {sex:'female',num:[1,2,3]},这样a=[2,3]
+如果有重复的属性名： 原名字：新名字 即 skillName:sklName
+扩展运算符：将剩下的属性拿出来：const {name,...oth}={name:"h",age:1,sex:"female"},这样oth={age:1,sex:"female"}
+合并对象：objMain={...obj1，...obj2}
+默认值：若存在则采用存在的值，若不存在或者值是undefined，就给给的值const{name,age=1,hobby='drink'}={name:'h',age:22},这样age=22，hobby=‘drink’
+③字符串的解构赋值
+简单的字符串解构赋值：const[a,b,c，...d]='i am your dad',这样a='i',b=' ',c='a',d=[剩下的字符]
+
+3. ES6扩展
+①字符串的扩展
+一、模板字符串   
+如果需要在字符串内部加上变量除了可以使用'++'之外还可以将字符串的''变成``然后用${变量} 将变量包起来
+例如：var age = 15;  console.log(`我今年${age}岁了`)   
+注意一定要将字符串的引号改成``，即Esc下面的那个键
+二、补全字符串 padStart   padEnd   
+var str = 'i'
+在前面补齐：padStart(补全后的长度,补全添加的字符串)  str2=str.padStart(8,'mooc')  结果是moocmooi
+在后面补齐：padEnd(补全后的长度,补全添加的字符串)   str2=str.padEnd(6,'mooc')  结果是moocmi
+三、重复字符串 repeat（重复的次数）
+var str2 = str.repeat(10)   结果是iiiiiiiiii(10个i)
+四、判断字符串是否以指定的字符串开头或者结尾
+str.startsWith('b')/str.endsWith('b')  返回true/false
+五、 判断字符串是否包含指定的字符串
+str.includes('amooi')   会返回true/false
+六、for....of  遍历字符串
+for(let i of str){}  i表示遍历出来的每一个字符串
+
+②正则表达式扩展
+新增了两个修饰符u和y
+u表示将匹配的字符串视为一个整体进行匹配
+y表示匹配时进行全局匹配，但匹配到第一个后会保证第一个后紧跟着的也符合匹配，否则往后将不会继续匹配
+
+③数值扩展
+isNaN()  检测是否不是数字   isNaN('a')  返回true    isNaN('1')/isNaN(1)  返回false
+
+④函数扩展
+一、默认参数
+如果函数某一参数用户不传参则设定默认值：function sample(a,b=1){}  
+如果用户没传b，则b=1，传了则去传的值
+二、剩余参数
+es6之前如果不确定参数的个数，会用arguments来表示实参列表
+es6可以用...args：function sample(...args){}
+三、箭头函数
+let sample = (a,b) => {return a + b}    相当于  function sample(a,b){return a + b}
+注意：箭头函数没有arguments，只能用...args来表示
+箭头函数没有自己的this，无论何时this会向函数定义时的外层作用域查找this，直到找到为止，不会随着调用对象的改变而改变
+所以箭头函数可以避免我们需要用var that = this 来保存this，可以减少很多bug
+但是最好不要使用箭头函数作为对象的方法以及构造函数
+四、高阶函数
+（1）filter函数：
+ 作用：筛选数组，将符合回调函数的内容存入一个新数组，最后返回该新数组
+ 使用方式：新数组=数组.filter(回调函数)   
+ filter函数会自动遍历数组，并将每一次遍历出来的内容作为参数传入回调函数中，且该回调函数必须返回一个
+布尔值，当返回true时，函数会将回调的n放入新数组中；返回false时，会过滤掉这次的n
+eg：有一个数组nums = [20,50,120,444,33,99,120] 需要选出小于100的数字：
+let newNums = nums.filter(function(n){return n < 100;})     这样newNums就是所有小于100的数字数组
+
+（2）map函数：
+ 作用：对数组进行处理，按照回调函数的方式对数组每一项进行处理后存入一个新数组，最后返回该新数组
+ 使用方式：新数组 = 数组.map(回调函数)
+ map函数会自动遍历数组，并将每一次遍历出来的内容作为参数传入回调函数中，并将回调函数return的结果
+放入新数组中
+eg：有一个数组nums = [20,30,40,55] 需要将数组的每一项都乘2：
+let newNums = nums.map(function(n){return 2 * n;})    这样newNums就是原数组乘2后的结果
+
+（3）reduce函数：
+ 作用：对数组中所有的内容进行汇总
+ 使用方式：结果 = 数组.reduce(回调函数(上一次函数返回值，这一次遍历的值)，初始值)
+ reduce函数也会遍历数组，将上一次函数的返回值(第一次是初始值)、这一次遍历到的数组内容传入回调函数中，
+并将这一次回调函数return的内容作为下一次回调函数的第一个参数传下去...直到最后一次得到最终结果
+eg：有一个数组nums = [999,1500,600,555,20,333] 需要求数组的和
+let total = nums.reduce(function(preValue,thisValue){return preValue + thisValue},0)
+
+⑤对象扩展
+一、简洁表示法
+es6之前在定义对象的方法时say:function(){console.log(this.name)}
+es6可以简洁的这样写：say(){consloe.log(this.name)}  即省略了：和function
+二、属性名表达式
+一般对象的属性不能是变量名，但是在es6中，可以用[变量名]来作为属性名称
+例如：const key = 'age'
+const obj = {name:'xiaoming',[key]:14}  这样obj.age=14
+三、Object.assign()
+将对象合并起来并返回新的对象，类似于$.extend  但这是浅拷贝。$.extend 是深拷贝
+四、Object.keys(对象)/Object.values(对象)/Object.entries(对象)
+返回对象所有可枚举属性的名称/值/名称+值    以数组的形式返回
+五、Object.setPrototypeof(,)修改对象的原型    Object.getPrototypeof()取出对象的原型
+Object.setPrototypeof(obj,obj1) 将obj的原型修改为obj1
+Object.getPrototypeof(obj) 取出obj的原型，相当于obj._proto_
+
+⑥数组扩展
+一、将数组作为参数传参
+say(...arr)  相当于：say.apply(null,arr)
+二、数组去重
+var arr = new Set([1,1,2,3,5,5])  即可完成对数组的去重   最后用  let a = [...arr]  将结果转换成数组
+三、将类数组转换成数组
+const obj={0:'liu',1:'ddd',length:2}  注意类数组必须满足：属性名是0,1,2,3  且必须含有length属性
+const arr = Array.from(obj)  这样arr=['liu','ddd']
+还可以：[].slice.call(obj)或者Array.slice.call(obj)
+四、覆盖数组 
+ fill(用什么覆盖，覆盖起始的索引，覆盖结束的索引)
+[1,2,3,4,5,6,7].fill(0,2,6)   结果是  [1,2,0,0,0,0,0]
+五、检测数组是否含有某一项
+[1,2,3].includes(1)  返回true/false
+六、keys()/values()/entries()
+返回数组所有可枚举属性的名称/值/名称+值 
+七、find  根据回调函数遍历数组，当回调函数返回true时，就返回当前遍历到的数组值
+[1,2,3,4].find(function(value,index,arr){ return value % 2 === 0})  返回第一个偶数2
+七、findIndex  根据回调函数遍历数组，当回调函数返回true时，就返回当前遍历到的数组的索引
+[1,2,3,4].findIndex(function(value,index,arr){ return value % 2 === 0})  返回第一个偶数的索引：1
+
+
+4. Promise对象
+①含义：是异步编程的一种解决方案  Promise存在两种状态：成功，失败，一旦到达某种状态就不会再改变
+②基本用法：
+一、先实例化一个Promise对象，传入两个参数：resolve(成功时触发的函数),reject(失败时触发的函数)
+写出成功和失败的条件，将resolve和reject放入对应的条件：
+let p = new Promise((resolve,reject) => {if(成功){resolve()} else{reject()}})
+二、然后定义resolve和reject以及无论成功与否都会触发的函数：
+定义resolve：p.then(() => {resolve 的函数内容})
+定义reject：有两种方式：
+一种是写在then中作为第二个参数：p.then(() => {resolve 的函数内容},() => {reject的函数内容})
+另一种是写在catch内：p.catch(() => {reject的函数内容})
+定义无论成功与否都会触发的函数：
+p.finally(() => {无论如何都会触发的函数})
+
+③一些方法：
+一、Promise.all([])  将多个promise实例组合起来 （全真为真，一假为假）
+let p = Promise.all([第一个promise实例，第二个promise实例，.......]);
+p.then(arr1=>{}).catch(arr2 => {}).finally()
+如果所有promise实例都成功，则p决议为成功，并进入then触发所有promise实例的resolve函数,
+arr1就是每个promise实例的resolve函数参数组合起来的数组形式
+如果有一个promise实例决议为失败，则p决议为失败，并进入catch触发promise实例中第一个失败的
+reject函数，arr2就是reject函数参数
+如果传入的是一个空数组，则直接进入then
+
+二、Promise.race([])   将多个promise实例组合起来   （一真为真，一假为假）
+let p = Promise.race([第一个promise实例，第二个promise实例，.......]]);
+p.then(data1=>{}).catch(data2 => {}).finally()
+最先决议的promise如果决议为成功，则进入then，触发该promise的resolve函数
+最先决议的promise如果决议为失败，则进入catch，触发该promise的reject函数
+
+三、Promise.resolve()/Promise.reject()
+直接将promise决议为成功/失败
+let p = Promise.resolve(data);   p.then((data) => {})   p被决议为成功并进入then中
+也就是Promise.resove(data).then((data) => {...})
+
+
+5. CLASS类
+①含义：相当于构造函数，只不过定义在构造函数原型链上的方法可以写在Class内部
+②基本结构：注意方法之间不能用，隔开
+class Car{
+       constructor(color,origin){this.color=color;this.origin=origin} 
+相当于构造函数,内部定义类的属性   静态属性只能通过Car.prop=''  来设置，不能使用static   
+       changeColor(color){this.color=color}
+       static  repair(){}
+相当于定义在原型链上的方法，this.+名字 来访问属性和其他方法
+static 的方法是静态方法，只能通过Car.repair()访问，不能通过实例对象car.repair访问  静态方法可以和动态方法同名
+静态方法中的this指向的是class类，而不是实例对象    父类的静态方法可以被子类继承 
+}
+var car1 = new Car('red','BMW')    这里传的参数对应constructor中的参数
+
+③getter和setter方法，在获取/设置属性值的时候做一些额外的事情
+可以使用Object.defineProperty(obj,property,{})
+在ES6的class中：
+class Person{
+     constructor(){this._name=''}
+     get name(){return this._name}    get + 对应属性名(){}
+     set name(val){this._name = val};   set + 对应属性名(){}
+}
+const person = new Person();
+person.name = '123';
+console.log(person.name)   //123
+注意调用的时候不要造成死循环，设置的时候将name获取值为_name
+
+④类的继承
+基本语法：class B extends A{constructor(){super()}}
+注意在子类的constructor中必须先调用super(),即调用父类的constructor，并传入相应的参数
+也可以通过super.方法()  来调用父类的方法，注意this指向的是子类的实例
+在静态方法中super.方法是父类的静态方法，在非静态方法中super.方法是父类的非静态方法
+子类中方法如果不重写则默认和父类的方法一致
+
+⑤
+
+
+
+
+
+
+
+
+
+

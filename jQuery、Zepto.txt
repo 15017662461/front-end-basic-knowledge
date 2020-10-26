@@ -1,0 +1,228 @@
+jQuery   轻量级的写得少，做得多的javascript库
+一、jQuery的简单引入
+先用script src引入下载好的jQuery文件，然后在用script标签引入我们要自己写的js代码
+
+二、jQuery的经典符号$
+jQuery将所有东西封装在jQuery对象中，$也是jQuery的合法变量，$=window.jQuery===jQuery
+也就是说能用$也就能用jQuery
+使用jQuery的方法时，对象必须是jQuery对象，如果是this则要用$(this)转换成jQuery对象
+如果$被占用，可以通过  var jq = $.noConflict(); 来更改符号，这样所有$都可以被替换成jq
+
+注意$()jQuery对象不能调用原生的js方法，同理，dom对象也不能调用jQuery封装好的方法，
+所以，jQuery中this如果要调用jQuery方法，要用$(this)
+jQuery对象可以通过$()[0/1/2...]或者$().get(0/1/2...)转换为dom对象
+而dom对象也可以通过$(dom)转换为jQuery对象
+
+
+三、书写格式
+正常格式：$(document).ready(function() {...})  推荐
+缩写格式：$().ready(function () {...})  或者$(function() {...} )
+以上相当于原生的window.onload() = function (){}
+
+四、选择器
+1. 基本选择器
+①ID选择器   $('#id')相当于document.getElementById('id');选中的是一个
+②标签选择器    $('div')相当于document.getElementsByTagName('div');选中的是一组
+③class选择器   $('.class')相当于document.getElementsByClass('class');选中的是一组
+④通配符选择器 $('*')选择得是所有节点，包括html，head，meta，script，body等等
+2.多项选择器(将每一个选择器匹配到的元素合并后返回，可以指定多个选择器，并将匹配到的元素合并到一个结果内)
+①$('#id,.class,div')选出来的是一组，有id选到的，有class选到的，有div选到的，根据html的先后顺序排列，而不是根据选择器先后顺序排列
+3.层级选择器
+①祖先后代选择器   $('祖先元素   子元素')  ，这样就把处于该祖先元素下的子元素选择出来  
+②直接后代选择器   $('父元素>子元素')    这样就把父元素下面直接对应的子元素选择出来
+③相邻兄弟选择器    $('div+span ')     这样就把紧跟在div后面的span选择出来，注意要紧跟在后面
+④兄弟选择器        $('div~span')      这样就把位于div后面的所有的span都选择出来，这里不用紧跟着，只要在后面就行
+4.属性选择器
+①$('[href]')  选择带有href属性的元素
+②$('[href=#]')  选择带有href属性且值是#的元素
+③$('[href!=#]')  选择带有href属性且值不是#的元素
+④$('[href^=www]')  选择带有href属性且值以www开头的元素
+⑤$('[href$=com]')   选择带有href属性且值以com结尾的元素
+⑥$('[href*=baidu]')   选择带有href属性且值包含baidu的元素
+⑦$('[type][src][...]')    选择带有type属性，且带有src属性...属性的元素，要同时满足[]中的所有条件
+5.过滤器
+①$('div:first-child')   选择div且该div是某一元素的第一个子元素,这里数的是所有子元素
+②$('div:last-child')    选择div且该div是某一元素的最后一个子元素
+③$('div:nth-child(N)')  选择div且该div是某一元素的第N个子元素，注意这里跟css一样，N从1开始，且N也可以是表达式
+④$('div:nth-last-child(N)')  选择div且该div是某一元素的倒数第N个子元素
+⑤$('div:only-child')  选择div且该div是某一元素的唯一的子元素
+⑥$('div:first-of-type')   选择div且该div是某一元素的第一个div子元素，这里数的是div元素
+⑦$('div:last-of-type')    选择div且该div是某一元素的最后一个div子元素
+⑧$('div:nth-of-type(N)')    选择div且该div是某一元素的第N个div子元素
+⑨$('div:nth-last-of-type(N)')   选择div且该div是某一元素的倒数第N个div子元素
+⑩$('div:only-of-type')    选择div且该div是某一元素的唯一的div子元素 
+6.表单相关
+①$(':input')  可以选择出<input><select><textarea><button>
+②$(':text')   选择出单行可输入的文本框，相当于$('input[type=text]')
+③$(':password') 选择出可输入的密码框，相当于$('input[type=password]')
+input所有的type类型都可以通过$(':...')来选择出来
+④$(':enable') /$(':unable')  选择出可输入的/不可输入的文本框
+⑤$(':checked')   选择出当前被选中的文本框，这里还可以选中option被选中的
+⑥$(':selected')    选择出所有被选中的option
+7.查找和过滤
+①$('div).find('.class'/'#id')选择div里面寻找相应的.class或者id或者tagname
+②$('div').children('.class'/'#id')   寻找div里面相应的.class或者id或者tagname的子元素，注意这里只能是子元素，不能是孙子元素
+③$('div').parent()   寻找div的父元素，找到的只有一个，因为父元素只有一个
+    $('div').parents()   寻找div的所有直系亲属，包括父元素，爷爷元素，太爷爷元素.....
+④$('div').next()   寻找div紧邻着的下一个元素
+⑤$('div').prev()    寻找div紧邻的上一个元素
+重要！⑥$('div').eq(8)    找到所有div然后选择第8个div，负数的话是倒数第n个  选出来的是jQuery对象
+或者$('div').get(8)  选出来的是dom对象
+⑦$('div').siblings()      选择出div的所有的兄弟的元素
+⑧$(div).filter(...)        按照...条件在div中筛选出符合条件的，可以填数字也可以填id，class
+
+五、jQuery事件
+1. 鼠标事件
+① 单击   .click(function () {})
+② 双击   .dblclick(function () {})    双击会触发单击事件
+③ 鼠标按下   .mousedown(function () {})
+④ 鼠标松开   .mouseup(function () {})  
+⑤ 鼠标进入/移出   .mouseenter(function () {})/.mouseleave(function () {})
+⑥ 鼠标进入/移出元素或者其子元素    .mouseover(function () {})/.mouseout(function () {})
+⑦ 鼠标滑过(相当于进入+移出)    .hover(function () {进入},function () {离开})
+⑧ 鼠标移动      .mousemove(function () {})
+⑨ 鼠标滚轮滚动/拖动滚动条    .scroll(function () {} )
+2.键盘事件
+① 按键按下   .keydown(function (event) {})  event参数包含的key和keyCode能反应按下哪个按钮
+② 按键松开   .keyup(function () {event})
+③ 按键按完   .keypress(function () {})
+3. 其他事件
+①  .ready(function () {})   加载完成后才会执行内部的函数
+②  $(window).resize(function () {})   调整窗口大小时触发内部函数，
+③  .focus(function () {})/.blur(function () {})   获得焦点/失去焦点触发内部函数
+④  .change(function () {})     内部的值发生改变触发内部函数
+⑤  .select(function () {})       当textarea或者文本类型的input元素中的文本被选择时触发的事件
+⑥  .submit(function () {})      当提交表单的时候回触发内部事件，可以用来给那些不具有提交表单功能的添加提交的功能
+例如：$('div').click(function () { $('form').submit}),还可以阻止表单提交：$('form').submit(function () {return false;})
+4. 事件绑定与取消
+1. 绑定
+①第一种方法：    $('').事件名称(function () {}) 示例：  $('submit').click(funcion () {index++})
+②第二种方法：    $('').on('事件名称',function () {})  示例：$('submit').on('click',function () {})
+或者：$(document).on('事件名称','需要绑定事件的元素选择器',函数名)   $(document).on('click','a',onclick)
+③第三种方法绑定多个事件：  $('').on({事件名称1:function () {}, 事件名称2:function () {}  })
+示例：$('div').on({click:function () {index++},mouseover:function (){index --}})
+2. 取消
+$('').off('事件名称'，函数名)   示例： $('div').off('click',bind)
+3. 一次性事件的绑定
+如果一个事件只执行一次后就需要被取消绑定，那么我们有绑定一次性事件的方法：
+$('').one('事件名称'，函数名)
+5.自定义事件的绑定与触发
+绑定：$('').on('自定义事件名称'，function(){})
+触发:  $('').trigger('自定义事件名称',[传参1，传参2...])或者
+或者   $('').triggerHandler('自定义事件名称',[传参1，传参2...])
+trigger和triggerHandler区别：
+trigger会触发所有同名事件，包括同名的系统预留事件，而triggerHandler只会触发一个事件，不触发系统事件
+triggerHandler只对第一个元素做处理，即若$()包含了多个元素，triggerHandler只会对第一个执行事件而trigger会对所有元素执行事件
+triggerHandler不会发生事件冒泡，而trigger会发生事件冒泡
+
+想要绑定一个只执行一次的事件：$('').one('事件名称',function(){})
+一个事件执行下一次之前需要停止上一次执行：$('').off('事件名称')
+
+事件代理：由于大部分事件都具有冒泡的性质，我们可以将相应的事件绑定在其父元素上
+$('父元素').on('事件名称','对应绑定的元素(如'.dropdown')',funcion(){})
+
+
+六、jQuery动效
+注意Zepto使用动画，.data() 以及 tap等一些特殊事件等时要引入fx.js和fx_method.js      data.js      touch.js
+1. 自定义动画  
+animate({css内容},动画持续时间单位是毫秒,动画结束后执行的函数)  例如：$('img').annimate({
+'opacity':'1'},1000,function(){alert('动画结束了')})
+如果多个动画进行，在执行下一个时要让上一个停下：$('img').stop().animate(..)
+要想动画进行之前有延迟：delay(延迟的时间单位是毫秒)，写在animate之前
+2. 动画函数
+① 显示：$('').show(持续时间/'slow'/'fast') 从左上角开始慢慢显示
+② 隐藏：$('').hide(持续时间/'slow'/'fast')  从左上角开始慢慢消失
+③ 根据当前元素来决定显示还是隐藏： $('').toggle(持续时间/'slow'/'fast')
+④ 淡入:   $('').fadeIn(持续时间/'slow'/'fast')  从中心开始显示
+⑤ 淡出:   $('').fadeOut(持续时间/'slow'/'fast')  从中心开始消失
+⑥ 根据当前元素来决定淡入还是淡出:$('').fadeToggle(持续时间/'slow'/'fast')
+⑦ 垂直展示:$('').slideUp(持续时间/'slow'/'fast')
+⑧ 垂直消失:$('').slideDown(持续时间/'slow'/'fast')
+⑨ 根据当前元素来决定：$('').slideToggle(持续时间/'slow'/'fast')
+
+六、jQuery提供的遍历方法
+$.each(object,function (index,value){})
+其中object是需要遍历的对象或者数组或者DOM节点，json等
+index表示数组索引或者对象的属性名
+value表示数组项或者对象的属性值，
+函数内部填写遍历对每一项做的事情，比如console.log('index:'+index+'value:'+value);
+
+七、jQuery 一些操作DOM的方法
+①设置css方法 $('').css({'属性名':'属性值'','属性名':'属性值''})
+②设置class方法：添加 $('').addClass('class名字')   删除  $('').removeClass('class名字')
+判断是否含有某个class$('').hasClass('className')
+③删除节点：删除自身及子元素$('').remove()   删除所有子元素 $('').empty()
+④添加节点：在p后面插入div $('p').append('div')   在p的前面插入div $('p').prepend('div')
+或者：在p后面插入div: $('p').after('div')   在p的前面插入div $('p').before('div')
+⑤复制节点：$('').clone  这样就复制了一份，然后后面可以调用方法   $('').clone.appendTo($('#box'))
+替换节点：$('div').replaceWith('<p>我是替换的</p>')  这里将div替换成了p
+包裹节点：$('p').wrap('<div></div>')   这样每一个p外层就被一个div包裹了
+                 $('p').wrapAll('<div></div>')   这样所有p外层均被同一个div包裹
+⑤设置内容和属性   设置文本内容$('').text('')  设置dom和文本$('').html()  设置属性 $('').attr('属性名','属性值')
+⑥获取索引，比如要获取是所有选出来的div组内的索引：var index = $('div').index();
+⑦获取元素个数，$('').size(),  例如获取选出来的div中有多少个div   size = $('div').size(),这个好像删除了
+⑧获取元素的css宽度，高度   $('').width().height()
+⑩创建元素并插入相应的位置:    1.$('div').append('<li></li>')   2.$('<li></li>').appendTo(div)
+3.$('<li></li>').after('p')在li后面插入p   4.$('<li></li>').before('p')  在li之前插入p 
+⑪获取元素的value：.val()
+⑫删除字符串两端的空格：$.trim(str);
+⑬获取元素距离顶部的距离：$('').offset().top;  
+⑭获取页面滚动的距离  $(window).scrollTop();  元素要出现在可视区域内的条件：$(window).scrollTop<$('').offset.top();
+⑮处理url：使用ajax的get方法时，需要处理url，将data加入url：先将data转换成 &&...&&的形式：$.params(data)
+
+八、jQuery的Ajax方法
+$.ajax({
+     url:"...",
+     method:"post/get",
+     async:true/false,
+     dataType:"json"/"jsonp"（跨域必须用jsonp）,
+     success:function () {请求成功后的回调函数}，
+     beforeSend(XHR):function(){发送前修改XMLHttpRequest对象，如自定义请求头部},
+     cache:true/false,
+     data:发送的数据，自动转换为字符串格式，get请求将添加至url后
+     error:function(){请求发生错误时触发的函数}，
+     
+})
+
+九、jQuery自创UI组件库
+1.设置自定义的UI组件库：$.fn.ui名称 = function () {ui执行内容}或者，$.fn.extend({ui名称：function(){}})
+例如$.fn.blue = function () {.....return this}或者$.fn.extend({blue:function(){........ return this})
+return this的作用就是使得后面的调用能够采用链式的写法
+2.调用ui组件库,  $('').ui名称()  例如：$('div').blue();
+
+十、jQuery给函数传参并改变函数this指向
+$.proxy(函数名称，改变后的this指向，需要传的参数);
+
+十一、jQuery两个对象的重复覆盖与添加
+如果提供了两个对象，想要整合成一个对象：两个对象的所有属性都保留，但重复的属性以第二个对象为准
+$.extend({},defaults,options)整合出来的对象就包含defaults和options但重复的以options为准
+
+十二、jQuery获取窗口和元素的一些属性方法
+$(window)是当前浏览器窗口对象，$(window).load等同于window.onload=function(){}会在页面
+整个加载完成后才会执行，只允许存在一个该函数
+$(document)是当前打开的文档对象,$(document).ready是dom绘制完毕之后执行，不必等到加载完毕，可以存在多个该函数
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

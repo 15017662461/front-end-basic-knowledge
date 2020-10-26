@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+
+    <script>
+        function deepClone(origin,target){
+            const toStr = Object.prototype.toString;
+            const objStr = '[object Object]';
+            let Or = Object.prototype.toString.call(origin) == objStr ? {} : [];
+            let result = target || Or;
+            for(let prop in origin){
+                if(origin.hasOwnProperty(prop)){
+                    if(typeof origin[prop] == 'object'){
+                        result[prop] = toStr.call(origin[prop]) == objStr ? {} : [];
+                        deepClone(origin[prop],result[prop]);
+                    }else{
+                        result[prop] = origin[prop];
+                    }
+                }
+            }
+            return result;
+        }
+
+
+
+
+        // result = JSON.parse(JSON.stringify(origin));    //  function 不能正常拷贝过来  函数   ‘’；
+        // {name:'123',sex:'female'....}
+        // {...}   Object.assign();    Object.create(origin);    origin 拷贝到原型链上    不是很好    也可以用
+        // str.includes
+        // Object.defineProperty(obj,'name',{value,writable,enumerable,configurable,get(){.....}})
+        // p.addEventListener('mouseover',() => {},false)
+    </script>
+</body>
+</html>

@@ -1,0 +1,360 @@
+DOM部分(Document Object Model)
+用于操作html和xml，也可以说是用来操作html和xml的编程接口
+document代表的是整个文档  
+1.节点
+①节点的类型：1元素节点(html标签)、2属性节点、3文本节点、8注释节点、9document、11DocumentFragment
+获取节点的类型：nodeType返回的数字
+②节点的属性：所有节点都有nodeName、nodeType，这只可读取不可修改
+文本节点和注释节点有nodeValue，可以读取也可以修改
+attributes是所有属性节点的集合
+③节点的方法：hasChildNodes（）判断是否有子节点
+
+2.  选择器(查看html元素)
+①document.getElementById('id');  通过id查看/选择html元素，拿出来的是一个
+②document.getElementsByTagName('div')[];  通过标签查看/选择html元素，拿出来是成组的，通过类数组保存 选所有标签document.getElementsByTagName('*');
+③document.getElementsByName('name')[];   通过name查看/选择html元素,拿出来也是成组的，只有表单，img，iframe好使
+④document.getElementsByClassName('class')[];  通过class查看/选择html元素,拿出来也是成组的
+⑤document.querySelector('div > span img.demo')可以像css选择器一样选择，选出来的是一个
+⑥document.querySelectorAll('div > span img.demo')可以像css选择器一样选择，选出来的是一组
+最后两个由于其不具有实时性，不怎么用
+⑦父节点      span.parentNode      通过一个元素选择到它的父节点     选出来是一个
+父元素节点   span.parantElement    通过一个元素选择到它的元素父节点     选出来是一个
+⑧子节点    div.childNodes     通过一个元素选择到它的子节点    选出来是一组
+子元素节点   div.children     通过一个元素选择到它的元素子节点    选出来是一组
+第一个子节点     div.firstChild    第一个元素子节点   div.firstElementChild     
+最后一个子节点  div.lastChild    最后一个元素子节点  div.lastElementChild
+⑨nextElementSibling/previousElementSibling    返回后一个/前一个兄弟元素子节点
+
+3.  增加DOM节点
+①document.creatElement('div')  括号里写的是标签名，创建的是元素节点    
+②document.creatTextNode('你好') 括号里写的是文本，创建的是文本节点
+③document.creatComment('comment') 括号里写的是注释，创建的是注释节点
+④document.createDocumentFragment()   创建的是文档碎片节点
+
+4.  插入DOM节点
+①div.appendChild(span)在div标签内部插入一个span，可以插入任何类型的节点
+②parentNode.insertBefore(span,strong)  在parentNode内部，strong之前插入span标签，也就是insert span before strong
+
+5. 删除DOM节点
+①div.removeChild(span);  把div内部的span标签删除
+②span.remove();  把span删除
+
+6. 替换DOM节点
+div.replaceChild(new,origin)   在div内部，用new替换掉origin  
+例如：   div.replaceChild(span,strong)    在div内部，用span替换掉strong
+
+7. 元素节点的属性
+①改变节点的HTML：div.innerHTML = “123”；这种方式可以改变标签
+②改变节点的文本内容：div.innerText = “123”；这种方式只能改变文本
+
+8. 元素节点的方法
+①设置节点的属性  div.setAttribute('class','header')  设置div的class名为header
+②查看节点的属性  div.getAttribute('class')  获取div的class名
+
+设置/移除class便捷方法：div.classList.add('className')/div.classList.remove('className')
+判断是否有某个className：div.classList.contains('className')  会返回true/false
+
+9. 日期对象Date()
+本质是一个对象，如果单纯的Date()返回的是当前时间的字符串形式
+如果new Date()返回的是当前时间的对象形式
+下面是在var date = new Date();的前提下的一些Date()方法，记录的都是新建date的时候的时间
+①date.getDate();返回的是今天是一个月的某一天(1~31)
+②date.getDay();返回的是今天是一周中的某一天(0~6)，其中周日是0，周一是1，以此类推
+③date.getMonth();返回的是月份(0~11);返回的值是真正的月数-1
+④date.getFullYear();返回的是四位数字的年份
+⑤date.getHours();返回的是小时(0~23)
+⑥date.getMinutes();返回的是分钟(0~59)
+⑦date.getSeconds();返回的是秒数(0~59)
+⑧date.getMilloseconds();返回的是毫秒(0~999)
+⑨date.getTime();返回的是1970年1月1日至今的毫秒数，最常用，时间戳
+⑩date.getTimezoneOffset();返回本地时间与格林威治标准时间的分钟差
+⑪date.setDate(15);设置Date为一个月中的某一天
+⑫date.setDay(3);设置Date为一周中的某一天
+⑬date.setMonth(5);设置Date为一年中的某一个月
+⑭date.setFullYear(2021);设置Date为某一年
+⑮后面时分秒也可以通过set来设置
+⑯date.toString();将日期转换成字符串格式
+⑰date.to...String();其中...可以填Date、Time，表示将相应的日期、时间转换为字符串
+⑱date.tolocaleString();根据本地时间格式将其转换为字符串
+
+10. 定时器
+①setInterval( function () {  }, 1000);  每隔1000msfunction内部的函数执行一次    该定时器非常不准确
+用clearInterval();来清除该定时器
+②setTimeout( function () { }, 1000);   1000ms后再执行function内部的函数，只执行一次
+用clearTimeout();来清除该定时器
+以上两种定时器function内部的this都指向window
+
+11. 一些操作方法(获取窗口属性，获取dom尺寸)
+①查看滚动条的滚动距离
+window.pageYOffset/window.pageXOffset
+IE9以下：document.body.scrollTop/document.body.scrollLeft或者document.documentElement.scrollTop;通常二者相加使用
+②查看可视区窗口的尺寸
+window.innerWidth/window.innerHeight
+IE9及以下：document.documentElement.clientWidth/clientHeight
+怪异模式下(去掉开头的!DOCTYPE html):document.body.clientWidth/clientHeight
+③查看元素的几何尺寸和位置
+第一种：domEle.getBoundingClientRect();兼容性很好
+该方法返回一个对象，里面包含left、top、right、bottom等，其中
+left和top代表该元素左上角的X和Y的坐标，right和bottom代表元素右下角的X和Y坐标
+但hieght和width属性老版本的IE并未实现，且返回的结果并不是实时的
+第二种：尺寸：dom.offsetWidth/dom.offsetHeight
+位置：dom.offsetLeft/dom.offsetTop  对于无定位父级的元素，返回性对文档的坐标，对于有定位父级的，返回相对于最近的有定位父级的坐标
+dom.offsetParent   返回最近的有定位的父级，如果没有，返回body
+④让滚动条滚动
+window.scrollTo(x,y)这里的x，y是需要滚动到的坐标，重复输入不会累加
+window.scrollBy(x,y)这里的x，y是需要滚动的距离，重复输入会累加
+⑤查看鼠标位置
+相对于整个HTML页面的位置（包括被卷起的面积）event.pageX   event.pageY
+相对于当前可视窗口的位置：event.clientX  event.clientY
+⑥终端检测
+navigator.userAgent  返回一个字符串 通常用于检测打开的设备
+
+
+12. 脚本化CSS
+①读写css属性
+dom.style.css    例如：div.style.backgroundColor = "red";   碰到float最好写成div.style.cssFloat = "left"
+这里写的话等于写在行间样式里面
+如果读取的话也只能读取写在行间样式上的css，写在外部css样式表上的不能读取
+②查询css样式
+window.getComputedStyle(对应的dom节点,null)  例如：window.getComputedStyle(div,null).width
+括号里第二个null可以用来读取伪元素的css，例如：window.getComputedStyle(div,"after").width;
+这里计算样式只读不可修改，且IE8及以下不兼容
+并且读取的值是所有css的总和，即读取的是最后综合了行间样式和外部css样式表的值
+IE浏览器独有：dom.currentStyle   也是只读不可修改   例如：div.currentStylr.width
+
+13. 事件
+一、绑定/解除事件的方法：
+①dom.onxxx = function (event) {}    这种方式兼容性很好，但一个事件不能绑定多个处理函数，里面的this指向的是相应的dom
+解除：dom.onclick = false/''/null;
+②dom.addEventListener('事件类型',处理函数,false)；最常用，可以绑定多个处理函数，但IE9以下不兼容，里面的this指向的是相应的dom
+解除：dom.removeEventListener('click',test,false);
+③dom.attchEvent('onxxx',处理函数)，IE独有，也可以绑定多个处理函数，但是！！！里面的this指向的是window
+解除：dom.detachEvent('onclick',test);
+匿名函数无法清除
+二、事件模型：
+①事件冒泡：结构上嵌套的元素，会存在事件冒泡的功能，即同一事件，自子元素冒泡向父元素
+事件捕获(IE没有)：结构上嵌套的元素，会存在事件捕获的功能，即同一事件自父元素捕获至子元素
+同一事件函数的冒泡和捕获两种只会出现一种，当dom.addEventListener(,,false)时触发的是事件冒泡
+当dom.addEventListener(,,true)时，触发的是事件捕获
+先捕获后冒泡
+并不是所有事件都有冒泡，focus，blur,change,submit,reset,select等事件不冒泡
+②取消冒泡事件：
+先给执行函数形参event
+第一种：在执行函数内部加上event.stopPropagation();   但不支持IE9以下版本
+第二种：在执行函数内部加上event.cancelBubble = true;IE有
+③阻止默认事件
+默认事件有：表单提交，a标签的跳转，右键菜单等等
+阻止默认事件的方法：
+第一种：在执行函数加上return false;这种方式只有对dom.onxxx = function (){}这种方式绑定的事件好使
+第二种：在执行函数加上event.preventDefault();   IE9一下不兼容
+第三种：在执行函数加上event.returnValue = false;  兼容IE
+④事件对象
+在绑定了事件之后浏览器会将这个事件被执行时的对象返回到形参event，而IE返回的是window.event
+所以我们使用兼容性写法：var event = event | | window.event 
+⑤事件源对象
+是事件对象的一部分，代表了是谁触发了这个事件
+event.target   火狐和谷歌有
+event.srcElement   IE和谷歌有
+兼容性写法  var target = event.target | | event.srcElement
+三、事件分类
+①鼠标事件
+click   鼠标左键点击，它相当于mousedown + mouseup
+mousedown/mouseup   鼠标按下/鼠标抬起
+mousemove    鼠标移动，通过event.pageX和event.pageY可以监听到鼠标位置
+contextmenu   右键点击出现菜单
+mouseover/mouseout        鼠标进入 /鼠标离开
+mouseenter/mouseleave       鼠标进入 /鼠标离开
+只有mouseup和mousedown能区分鼠标左右键，其中event.button能反应，左键是0，右键是2
+区分click和mousedown事件，可以利用mousedown和mouseup的时间差
+②键盘事件
+keypress   按键盘      只能响应字符类按键，可以区分大小写，返回charCode
+keydown    键盘按下  可以响应键盘任意键，但不能区分大小写，不返回charCode
+keyup    键盘抬起
+当按下键盘并松开后出现的事件顺序：keydown、keypress、keyup
+当按下键盘不松开出现的事件：keydown、keypress二者反复出现
+③文本类事件
+input   文本每出现一次改变就会触发
+change    文本失去焦点后才会触发(即鼠标移开后)
+focus    鼠标聚焦(点击文本框)
+blur      鼠标失去聚焦
+④窗体操作类(window上的事件)
+scroll    滚动条滚动
+load     页面加载
+resize    改变窗口大小
+⑤移动端事件（类似pan，swipe这种高级事件可以用hammer.js或者zepto，它们都封装了高级事件）
+touchstart      手指按下的一瞬间
+touchmove    手指按下后移动
+touchend        手指抬起
+如果在绑定的元素外按下再移动到元素内是不会触发任何touch事件的，但在元素内按下手指，即使移动到元素外，
+依然会触发touchmove和touchend事件
+与PC端一样，event对象上由若干个属性和方法：
+e.touches                 会包含所有按下的手指信息(包括按在元素上的和没按在元素上的)
+e.targetTouches       只包含按在对应元素上的手指信息
+e.changedTouches   只包含发生变化的手指信息(手指抬起时touchend只有该属性会包含抬起的手指)
+
+14. offset 、 scroll 、 client总结
+①offset  偏移，包括padding，border，不包括overflow隐藏的部分
+offsetParent  返回该元素相对于谁定位
+obj.offsetWidth  绝对宽度，不包括overflow，包括padding和border
+obj.offsetHeight  绝对高度，不包括overflow，包括padding和border
+obj.offsetTop   相对于定位元素的高度距离   jquery的offset().top 返回的是与文档html顶部的距离
+oj.offsetLeft    相对于定位元素的宽度距离
+
+②scroll 滚动，包括padding和没显示出来的overflow部分，不包括border
+scrollHeight  实际高度，包括overflow，padding，不包括border
+scrollWidth    实际宽度，包括overflow，padding，不包括border
+scrollLeft   设置或获取对象左边距离可视窗口左端的距离
+scrollTop   设置或获取对象上边距离可视窗口顶端的距离
+
+③client  可视内容，包括padding，不包括overflow隐藏和border
+clientWidth   对象可见的宽度，不包括滚动条等边线，会随窗口的显示大小改变
+clientHeight   对象可见的高度，不包括滚动条等边线，会随窗口的显示大小改变
+clientTop/clientLeft    这两个返回的是元素周围边框的厚度，一般它的值就是0。因为滚动条不会出现在顶部或者左侧
+event.clientX 当前鼠标相对可视区域的水平座标
+event.clientY 当前鼠标相对可视区域的垂直座标
+event.pageX  当前鼠标相对于整个html文档(包括被卷起的部分)的水平位置
+event.pageY  当前鼠标相对于整个html文档(包括被卷起的部分)的水平位置
+
+
+
+实例：让某对象a可以被鼠标拖动：
+先对a绑定鼠标按下的事件，并记录下此时物体的位置(因为这时鼠标按在物体上，故鼠标的位置就是物体的位置)
+然后在鼠标按下事件的内部，对文档绑定鼠标移动的事件，将a的left值设为此时鼠标的位置，
+再对文档绑定鼠标抬起的事件，在该事件内部取消对鼠标移动事件和鼠标抬起事件的绑定
+a.onmousedown = function(e){
+       var l = e.clientX - a.offsetLeft;
+       document.onmousemove = function(e){
+           a.style.left = e.clientX - l;
+	};
+       document.onmouseup = function(){
+    document.onmousedown = document.onmouseup = null  //取消事件的绑定   
+}	
+}
+
+BOM  (browser object model) 浏览器对象模型
+bom包含以下几种对象：window,navigator,screen,history,location,document,event
+①window对象
+它既是ECMAscript的全局对象，也是dom操作窗口的一个接口
+window.alert("")   显示带有一段消息和一个确认按钮的警告框
+window.confirm('')  显示一个带有指定信息和ok以及取消按钮的对话框，会根据用户点击返回一个布尔值
+window.prompt('a','b') 显示一个有输入功能的对话框，a在对话框中显示的纯文本，b是默认输入的文本
+如果用户点击取消按钮，返回null，如果用户点击确认按钮，返回用户输入的内容
+window.open(url,name,para)打开一个新的浏览器窗口或查找一个已命名的串口，url是子窗口路径，name使我们给
+这个子窗口起的名字(后期可以通过name来引用这个窗口)，para是窗口一系列参数
+window.close()   关闭浏览器当前窗口
+window.location.pathname  查看当前页面相对于服务器的地址
+②location对象
+location.href = ''   实现浏览器跳转，会生成相应的历史记录(即可以回退到原来的窗口)
+location.replace(url) 也可以用来跳转，但不可以回退
+location.reload(true)   重新加载当前页面，如果括号内不填true有可能从缓存加载，填了会从服务器加载
+③history对象
+history.back() 回到历史记录的上一步，相当于使用了history.go(-1)
+history.go(-n/n)回到历史记录的前n步/后n步
+history.forward()回到历史记录的下一步
+④screen对象
+screen.availWidth   返回可用的屏幕宽度
+screen.availHeight   返回可用的屏幕高度
+⑤navigator对象
+navigator.userAgent  获取浏览器类型、版本、移动端/PC端
+
+
+一些关于元素和窗口的属性获取方法
+①获取窗口滚动距离：
+js方法：window.pageYOffset/window.pageXOffset     IE9以下：document.body.scrollTop/document.body.scrollLeft或者document.documentElement.scrollTop;通常二者相加使用
+jQuery方法：$(window).scrollTop()/$(window).scrollLeft() 填写数字可以控制滚动到相应的位置
+②获取元素距离整个文档顶部的距离：
+js方法：需要用到递归，返回相对于父元素的距离一直递归到父元素是body即可
+jQuery方法：$(dom).offset().top 返回的是元素顶端到文档顶端的距离   
+③获取元素距离浏览器可视窗口顶部的距离：
+js方法：dom.getBoundingClientRect() 返回的是一个对象包含top,bottom top是元素顶端到可视窗口顶端的距离，bottom是元素尾端到可视窗口顶端的距离
+jQuery方法：$(dom).offset().top - $(window).scrollTop()
+④获取可视窗口的大小：
+js方法：window.innerWidth/window.innerHeight   IE9及以下：document.documentElement.clientWidth/clientHeight
+jQuery方法：$(window).width()/height()
+⑤获取整个文档的大小：
+js方法：
+jQuery方法：$(document).width()/height()
+⑥获取元素的大小：
+js方法：可视部分的大小dom.clientWidth/clientHeight   整体大小offsetWidth/offsetHeight
+jQuery方法：$(dom).width()/height()
+
+
+移动端点击click事件300ms延迟
+一、原因
+由于移动端需要判断双击放大，所以需要等待300ms若没有再次点击则是单击click事件，再次点击则是doubleclick事件
+二、解决
+①在meta name = 'viewport' content=""加上user-scalable=no  缺点是用户无法缩放
+②在meta name='viewport' contenr='' 加上width=device-width 缺点是兼容性不好，仅部分浏览器支持
+③在目标元素的css中 设置touch-action=none，将移除目标元素的延迟  缺点是兼容性不好，仅部分浏览器支持
+④使用zepto的tap事件 $().on('tap',callback)    缺点：存在点击穿透问题  穿透原因：例如弹窗关闭按钮
+在点击时先触发tap使得弹窗关闭，300ms后又触发click事件使得点击到弹窗消失后的下一层造成穿透
+如果一定要使用tap事件，则又有以下几种解决方案：
+1. 使用css的pointer-events：none/auto   在tap事件触发时将下一层设置为none，
+400ms后再将下一层设置为auto
+2. 监听元素的touchend事件，在时间内部e.preventDefault()阻止下一步默认触发的click事件
+3. 使用jQuery的动画fadeIn，fadeOut等，并设置动画持续时间大于400ms:  $().fadeOut(400)
+⑤使用github上的fastclick.js  使用方法：
+先引入js文件，根据github上文件的提示进行下一步即可
+原理：将touchend封装成click事件，然后禁用300ms后系统触发的click事件
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
