@@ -72,11 +72,11 @@ console.log（a）；这种方式是输出在控制台，这种方式更加好�
 7.  类型转换
 ①Number(null)    将数据转换成数字类型     null--0   undefined--NaN   true--1   "a"/"b"...--NaN
 ②parseInt(123.9,16)  后面的数表示进制，即123是16进制的数，转换成10进制的数，变成整数是将小数点后面的数字直接去掉而不是四舍五入
-parseInt("123px")最后会变成123，即parseInt(字符串)会舍弃字符串里面的字母，保留数字
+   parseInt("123px")最后会变成123，即parseInt(字符串)会舍弃字符串里面的字母，保留数字
 ③parseFloat(123.999)转换成浮点型
-④String(123)  将数据转换成字符串类型，String.fromCharCode(),能够将ASICC码转换成相对应的字符串
+④String(123)   将数据转换成字符串类型，String.fromCharCode(),能够将ASICC码转换成相对应的字符串
 ⑤Boolean(123)   将数据类型转换成布尔值   只有undefine、null、“”、0、false、NaN这六个值转换成布尔值是false其余都是true
-⑥123.toString(2)   将数据类型转换成2进制的字符串，注意undefined和null不能使用这种方法，会报错
+⑥123..toString(2)   将数据类型转换成2进制的字符串，注意这里要加两个.，因为一个.会认为是小数点
 ⑦isNaN("abc")   判断是不是NaN,返回值是false/true
 不发生类型转换：===  !==
 
@@ -109,8 +109,8 @@ console.log(sum(5,4,3,2,1));
 function a(){
 var num = 100;
       function b(){
-   num ++;
-   consloe.log(num);	
+   	num ++;
+   	consloe.log(num);	
       }
 return b;
 }
@@ -221,8 +221,8 @@ return n * arguments.callee(n - 1);
 ③Math.pow(x,y);返回值是x的y次幂   注意Math.exp(x) 返回e的x次幂
 ④Math.sqrt(x);返回值是x的平方根
 ⑤Math.abs(x);返回的是x的绝对值
-⑥Math.ceil(x);返回值是上舍入最接近的整数
-⑦Math.floor();返回值是x下舍出最接近的整数
+⑥Math.ceil(x);返回值是上舍入最接近的整数，注意负数
+⑦Math.floor();返回值是x下舍出最接近的整数，注意负数
 ⑧Math.sin();Math.cos();返回正余弦值
 ⑨Math.max(x,y,z)/Math.min(x,y,z)   返回xyz的最大值或最小值
 
@@ -276,6 +276,7 @@ with、arguments.callee、function.caller,变量赋值前必须声明，拒绝�
 ②charCodeAt     取出字符串相应位置的字符编码   
 ③split("")    按照“”中的内容将字符串拆分，并塞入数组中   常用这种方法将字符串转换成数组
 ④toUpperCase() 和 toLowerCase()   将字符串转换成大写/小写
+⑤indexOf('a')   从字符串中查找对应的字符，返回第一个出现的索引。常用于判断是否含有某一个子串，若返回-1则表示不含有
 
 27. 转义符号(\)
 ①单纯的一个\具有转义的作用，可以将后面的那一个字符正常输出\"可以将"在字符串中正常输出
@@ -302,8 +303,8 @@ var reg = /\r/   表示回车符，必须严格等于\r
 var reg = /\t/   表示制表符(缩进)，必须严格等于\t        
 var reg = /\uxxxx/   表示以十六进制数xxxx规定的Unicode字符    中文/[\u4e00-\u9fa5]/  
 ⑤量词：
-n+ 若干位 ：var reg = /\w+/   表示若干个单词字符
-n* 0个或者若干个：var reg = /\w*/     表示0个或者若干个单词字符
+n+ 若干位 ：var reg = /\w+/   表示1个或以上单词字符
+n* 0个或者若干个：var reg = /\w*/     表示0个或以上单词字符
 n? 0个或者一个：var reg = /\w？/     表示0个或者一个单词字符
 n{X} x个:   var reg = /\w{5}/       表示5个单词字符
 n{X,Y} x~y个： var reg = /\w{1,5}/      表示1~5个单词字符
