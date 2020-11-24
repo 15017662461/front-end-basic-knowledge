@@ -553,13 +553,40 @@ console.log(person.name)   //123
 在静态方法中super.方法是父类的静态方法，在非静态方法中super.方法是父类的非静态方法
 子类中方法如果不重写则默认和父类的方法一致
 
-⑤
+6. Promise 的语法糖async和await
+  这两个是Promise的语法糖，await只能使用在async关键字的函数中
+  ①async关键字修饰的函数将会自动变成一个Promise对象，并将函数内return 返回的数据作为后面then()中
+     或者叫resolve中的参数
+     例如：async function test(){
+	     return 1;
+	}
+    调用时：test().then(data => { console.log(data)//这时的data就是1 })
+  ②await关键字只能使用在async关键字声明的函数中。await会阻塞语句的执行，直到后面的语句返回结果
+     并将返回的结果作为返回值，也就是说await后面通常是一个Promise，当promise决议完成后将结果返回
+     给await前的变量：
+     例如：async function test(){
+	     const data =await getData();//getData是一个axios函数，用于获取数据，data中就是获取的数据
+	}
 
-
-
-
-
-
+7. 生成器函数以及迭代器
+① 生成器函数和迭代器之间的关系：生成器函数执行后会返回一个迭代器
+② 迭代器是什么？  迭代器(iterator)是for of循环的核心，for of循环实际上就是在一直调用迭代器的.next()方法
+③ 生成器函数？ 生成器函数的有两个特点：函数名前有一个*,内部有yield，执行生成器函数会返回一个迭代器对象
+迭代器对象每一次next()都会走到下一个yield之后（执行这个yield以及它之前的语句）然后停止，直到下一次执行
+会继续往下走找到下一个yield : 
+function* test(){   // 生成器函数
+   console.log(1);
+   yield 1;
+   console.log(2);
+   yield 2;
+   console.log(3);
+   yield 3;
+}
+const iter = test()// 迭代器对象
+iter.next() //输出1 并 返回 {value : 1,done:false}
+iter.next() //输出2 并 返回 {value : 2,done:false}
+iter.next() //输出3 并 返回 {value : 3,done:false}
+iter.next() // 返回 {value : undefined,done:true}
 
 
 
