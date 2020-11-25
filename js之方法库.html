@@ -21,10 +21,10 @@
 
         //  对象的深度克隆方法 
         function deepClone(origin, target) {
-            var target = target || [];
+            var target = target || new origin.constructor;
             var toStr = Object.prototype.toString;
             var arrStr = "[object Array]";
-            for (var prop in origin) {
+            for (let prop in origin) {
                 if (origin.hasOwnProperty(prop)) {
                     if (typeof (origin[prop]) == 'object') {
                         // if (toStr.call(origin[prop]) == arrStr) {
@@ -32,8 +32,12 @@
                         // } else {
                         //     target[prop] = {};
                         // }
-                        target[prop] = (toStr.call(origin[prop]) == arrStr) ? target[prop] = [] : target[prop] = {};
-                        deepClone(origin[prop], target[prop]);
+                        if (origin[prop] instanceof RegExp) {
+                            target[prop] = new RegExp(origin[prop])
+                        } else {
+                            target[prop] = (toStr.call(origin[prop]) == arrStr) ? [] : {};
+                            deepClone(origin[prop], target[prop]);
+                        }
                     } else {
                         target[prop] = origin[prop];
                     }
@@ -342,11 +346,25 @@
 
         // 设置rem(就是根据视口宽设置html字体大小，等于视口宽/10)
         //别忘了设置window.addEventListener('click',function(){setRem();},false);
-        function setRem(){
+        function setRem() {
             const docEl = document.documentElement;
             let winWidth = docEl.offsetWidth;
             docEl.style.fontSize = winWidth / 10 + 'px';
         }
+
+
+
+        var x = 0,y = 1;
+        function fn(){
+            x += 2;
+            fn = function(y){
+                console.log(y+(--x));
+            };
+            console.log(x,y)
+        }
+        fn(3);
+        fn(4);
+        console.log(x,y)
     </script>
 
 </body>
