@@ -482,3 +482,6 @@ map.on('count',_onCount);
 AMap.event.addListener(map,'click',_onClick);
 
 
+、、123
+
+
