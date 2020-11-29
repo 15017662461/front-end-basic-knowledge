@@ -36,7 +36,7 @@
                             target[prop] = new RegExp(origin[prop])
                         } else {
                             target[prop] = (toStr.call(origin[prop]) == arrStr) ? [] : {};
-                            deepClone(origin[prop], target[prop]);
+                            target[prop] = deepClone(origin[prop], target[prop]);
                         }
                     } else {
                         target[prop] = origin[prop];
