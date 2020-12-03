@@ -76,5 +76,22 @@
         <div class="forth"></div>
         <div class="fifth"></div>
     </div>
+
+    <script>
+        function Dog(name,sex){
+            this.name = name;
+            this.sex = sex;
+        }
+        Dog.prototype.bark = function(){
+            console.log('bark')
+        }
+        function _new(Func){
+            let args = Array.prototype.slice.call(arguments,1)
+            const res = {}
+            res.__proto__ = Func.prototype;
+            Func.apply(res,args)
+            return res;
+        }
+    </script>
 </body>
 </html>
