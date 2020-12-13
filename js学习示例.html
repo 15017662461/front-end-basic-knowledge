@@ -78,19 +78,28 @@
     </div>
 
     <script>
-        function Dog(name,sex){
-            this.name = name;
-            this.sex = sex;
+        function currying(fn,length){
+            length = length || fn.length;
+            return function(...args){
+                if(args.length >= length){
+                    return fn(...args)
+                }else{
+                    return currying(fn.bind(null,...args),length - args.length)
+                }
+            }
         }
-        Dog.prototype.bark = function(){
-            console.log('bark')
+        function add(a,b,c,d){
+            return a+ b+c+d;
         }
-        function _new(Func){
-            let args = Array.prototype.slice.call(arguments,1)
-            const res = {}
-            res.__proto__ = Func.prototype;
-            Func.apply(res,args)
-            return res;
+        add = currying(add,4)
+        console.log(add(1)(2)(3)(4))
+        console.log(add(1,2)(3)(4))
+
+        Function.prototype.myBind = function(context,...args){
+            let _this = this
+            return function(...a){
+                _this.call(context,...args.concat(a))
+            }
         }
     </script>
 </body>
