@@ -21,18 +21,18 @@ ECMAScript部分
 原始值放在stack（栈），放入后不能更改，只能重新赋值
 引用值放在heap（堆），放入后可以更改也可以重新赋值
 原始值的变量类型有以下五种：
-①Number(数字类型):  var a = 1;
-②String(字符串类型): var a = "javascript"; 用双引号包裹着的就是字符串类型，所以var a = "123"也是字符串类型
-③Boolean(布尔值):var b = false/true;
+①Number(数字类型)：var a = 1;
+②String(字符串类型)：var a = "javascript"; 用双引号包裹着的就是字符串类型，所以var a = "123"也是字符串类型
+③Boolean(布尔值)：var b = false/true;
 ④undefined:var a =undefined;a未定义
-⑤null(占位值):var b = null;
+⑤null(占位值):var b = null；
 如果Number结果超过了js的语法范围，正无穷表示为Infinity   负无穷表示为-Infinity
+引用值有若干种：数组array、对象...
 
 
-引用值有若干种：数组array、对象.....
 2.  运算符：
 +：可以进行数学运算还可以用于字符串连接，任何数据类型+字符串最后都会变成字符串
--，*，/，%（求余数），=，（）：优先级=最弱，（）优先级较高
+-，*，/，%（求余数），=，（）：其中优先级=最弱，（）优先级较高
 var a = 10;    doucument.write(a ++);    doucument.write(a);第一个打印出来的是10，第二个打印出来的是11，这是因为a++是先执行打印a在进行a+1；
 但如果是++ a的话则是先执行a+1在打印a的值    
 a = 10；b = ++a - 1 + a++ =11-1+11=21；a = 12；
@@ -57,7 +57,7 @@ for (var i = 1; i <= 100;  i ++){if (i % 10 == 7){continue;}document.write(i);}
 
 4.  循环语句
 for循环：for（i = 1; i < 10; i++）{n = n*2; }
-for(in)循环：用于遍历对象      for(var prop in obj){console.log(obj.[prop]);}
+for(in)循环：用于遍历对象      for(var prop in obj){console.log(obj[prop]);}
 如果不想遍历出原型的属性：for(var prop in obj){ if (obj.hasOwnProperty(prop)){console.log(obj[prop]);}}
 
 5.  输出方法
@@ -131,7 +131,6 @@ console.log(a + b);
 
 13. 对象
 对象可以包含属性和方法，比如属性：name:May,age:22;   方法：push:function(){consloe.log()};
-注意：只有引用值有属性和方法，原始值没有属性和方法！！！
 对象的创建方法：①对象字面量  var obj = {}
 ②构造函数   1）系统自带的构造函数  var obj = new Object();  2）自定义 function Abc(){this.name = "BMW";this.run = function(){this.health--;}}  var obj = new Abc();
 ③var obj = Object.create（原型）；
@@ -260,7 +259,7 @@ var obj = {
 }
 这个obj就是类数组，他同时也是对象
 
-24. try {} catch (e) {consloe.log(e.name + ":" + e.message);}
+24. try {} catch (e) {console.log(e.name + ":" + e.message);}
 在try里面发生的错误，不会执行try中错误后的代码，但会执行try...catch语句之后的代码
 而catch的作用就是捕捉try里面发生的第一个错误，并将错误信息和错误类型储存到e中
 其中e.message储存了错误信息，e.name储存了错误类型(名称)
@@ -362,7 +361,7 @@ const与let类似，也是在当前块级作用域内有效，不能被反复声
 }  
 
 
-2.ES6变量的结构与赋值
+2.ES6变量的解构与赋值
 将值从数组或属性从对象提取到不同的变量中
 ①数组的解构赋值
 简单的数组解构赋值：const arr  = [1,2,3,4]     const[ , ,a] = arr;这样a = 3，不需要的数可以用空格代替

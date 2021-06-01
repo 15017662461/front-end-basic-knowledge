@@ -94,6 +94,21 @@
         add = currying(add,4)
         console.log(add(1)(2)(3)(4))
         console.log(add(1,2)(3)(4))
+        function add(){
+            let _args = Array.prototype.slice.call(arguments)
+            function _add(){
+                _args.push(...arguments)
+                return _add
+            }
+            _add.toString = () => {
+                return _args.reduce((a,b) => {
+                    return a + b
+                })
+            }   
+            return _add
+        }
+
+        console.log(add(1,2,3)(4))
 
         Function.prototype.myBind = function(context,...args){
             let _this = this
