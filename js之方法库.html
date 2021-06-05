@@ -351,88 +351,99 @@
             docEl.style.fontSize = winWidth / 10 + 'px';
         }
 
-        // 实现一个Promise
+        // 手写一个Promise
         const PENDING = 'PENDING'
-        const REJECTED = 'REJECTED'
         const RESOLVED = 'RESOLVED'
-        class Promise {
-            constructor(executor) {
+        const REJECTED = 'REJECTED'
+
+        class Promise{
+            constructor(executor){
                 this.status = PENDING
                 this.value = undefined
                 this.reason = undefined
 
                 let resolve = (value) => {
-                    if (this.status == PENDING) {
+                    if(this.status == PENDING){
                         this.value = value
                         this.status = RESOLVED
                     }
                 }
 
                 let reject = (reason) => {
-                    if (this.status == PENDING) {
+                    if(this.status == PENDING){
                         this.reason = reason
                         this.status = REJECTED
                     }
                 }
-                try {
-                    executor(resolve, reject)
-                } catch (err) {
-                    reject(err)
+
+                try{
+                    executor(resolve,reject)
+                }catch(error){
+                    reject(error)
                 }
             }
 
-            then(onResolve, onReject) {
-                if (this.status == REJECTED) {
-                    onReject(this.reason)
-                }
-                if (this.status == RESOLVED) {
+            then(onResolve,onReject){
+                if(this.status == RESOLVED){
                     onResolve(this.value)
+                }else if(this.status == REJECTED){
+                    onReject(this.reason)
                 }
             }
         }
 
-        // 实现一个Promise.all
-        function promiseAll(promiseArr) {
-            return new Promise((resolve, reject) => {
-                let resolveCount = 0
-                let resolveArr = []
+        // 手写promise.all
+        function promiseAll(promiseArr){
+            return new Promise((resolve,reject) => {
+                let count = 0
                 let len = promiseArr.length
-                for (let i = 0; i < len; i++) {
+                let arr = []
+                for(let i = 0;i < len;i ++){
                     Promise.resolve(promiseArr[i]).then(value => {
-                        resolveCount++
-                        resolveArr.push(value)
-                        if (resolveCount == len) {
-                            resolve(resolveArr)
+                        arr.push(value)
+                        count ++
+                        if(count == len){
+                            resolve(arr)
                         }
-                    }, error => {
+                    },error => {
                         reject(error)
                     })
                 }
             })
         }
 
-        // 通用方法，length是参数长度
-        function currying(fn, length) {
-            let len = length || fn.length;
+        // 手写currying化
+        function currying(fn,length){
+            let len = length || fn.length
             let arr = []
-            return function temp() {
+            return function temp(){
                 arr.push(...arguments)
-                if (arr.length >= len) {
+                if(arr.length >= len){
                     let res = fn(...arr)
-                    arr = [] // 便于后续使用
+                    arr = []
                     return res
-                } else {
+                }else{
                     return temp
                 }
             }
         }
-        // 调用：
-        function add(a, b, c, d, e) {
-            return a * b * c * d * e;
+
+
+        function addCur(){
+            let arr = []
+            arr.push(...arguments)
+            function _add(){
+                arr.push(...arguments)
+                return _add
+            }
+
+            _add.toString = () => {
+                return arr.reduce((a,b) => {
+                    return a+ b
+                })
+            }
+            return _add
         }
-        add = currying(add, 5)
-        console.log(add(1)(2)(3)(4, 5))
-        console.log(add(1, 2, 3)(4)(5))
     </script>
 
 </body>
