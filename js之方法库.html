@@ -6,9 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <style>
+        html {
+            font-size: 10px;
+        }
+
+        .rem {
+            font-size: 10rem;
+        }
+
+        .em {
+            font-size: 10em;
+        }
+    </style>
 </head>
 
 <body>
+    <span class="rem">这是rem</span>
+    <div style="font-size: 10px;">
+        <span class="em">这是em</span>
+    </div>
+
     <script>
         //inherit继承方法
         function inherit(Target, Origin) {
@@ -356,56 +374,56 @@
         const RESOLVED = 'RESOLVED'
         const REJECTED = 'REJECTED'
 
-        class Promise{
-            constructor(executor){
+        class Promise {
+            constructor(executor) {
                 this.status = PENDING
                 this.value = undefined
                 this.reason = undefined
 
                 let resolve = (value) => {
-                    if(this.status == PENDING){
-                        this.value = value
+                    if (this.status = PENDING) {
                         this.status = RESOLVED
+                        this.value = value
                     }
                 }
 
                 let reject = (reason) => {
-                    if(this.status == PENDING){
-                        this.reason = reason
+                    if (this.status = PENDING) {
                         this.status = REJECTED
+                        this.reason = reason
                     }
                 }
 
-                try{
-                    executor(resolve,reject)
-                }catch(error){
+                try {
+                    executor(resolve, reject)
+                } catch (error) {
                     reject(error)
                 }
             }
 
-            then(onResolve,onReject){
-                if(this.status == RESOLVED){
-                    onResolve(this.value)
-                }else if(this.status == REJECTED){
-                    onReject(this.reason)
+            then(onResolved, onRejected) {
+                if (this.status == RESOLVED) {
+                    onResolved(this.value)
+                }
+                if (this.status == REJECTED) {
+                    onRejected(this.reason)
                 }
             }
         }
 
         // 手写promise.all
-        function promiseAll(promiseArr){
-            return new Promise((resolve,reject) => {
+        function promiseAll(promiseArr) {
+            return new Promise((resolve, reject) => {
+                let resolveArr = []
                 let count = 0
-                let len = promiseArr.length
-                let arr = []
-                for(let i = 0;i < len;i ++){
-                    Promise.resolve(promiseArr[i]).then(value => {
-                        arr.push(value)
-                        count ++
-                        if(count == len){
-                            resolve(arr)
+                for (let i = 0; i < promiseArr.length; i++) {
+                    Promise.resolve(promiseArr[i]).then((value) => {
+                        resolveArr.push(value)
+                        count++
+                        if (count == promiseArr.length) {
+                            resolve(resolveArr)
                         }
-                    },error => {
+                    }, error => {
                         reject(error)
                     })
                 }
@@ -413,37 +431,162 @@
         }
 
         // 手写currying化
-        function currying(fn,length){
-            let len = length || fn.length
+        function currying(fn, length) {
             let arr = []
-            return function temp(){
+            let len = length || fn.length
+            return function temp() {
                 arr.push(...arguments)
-                if(arr.length >= len){
+                if (arr.length >= len) {
                     let res = fn(...arr)
                     arr = []
                     return res
-                }else{
+                } else {
                     return temp
                 }
             }
         }
 
 
-        function addCur(){
+        function addCur() {
             let arr = []
             arr.push(...arguments)
-            function _add(){
+
+            function _add() {
                 arr.push(...arguments)
                 return _add
             }
 
             _add.toString = () => {
-                return arr.reduce((a,b) => {
-                    return a+ b
+                return arr.reduce((a, b) => {
+                    return a + b
                 })
             }
             return _add
         }
+
+
+        // 手写call
+        Function.prototype.myCall = function (context, ...args) {
+            const fn = Symbol('fn')
+            context[fn] = this
+            let res = context[fn](...args)
+            delete context[fn]
+            return res
+        }
+
+        // 手写apply
+        Function.prototype.myApply = function (context, args) {
+            const fn = Symbol('fn')
+            context[fn] = this
+            let res = context[fn](...args)
+            delete context[fn]
+            return res
+        }
+
+        // 手写bind
+        Function.prototype.myBind = function (context, ...args) {
+            let _this = this
+            return function () {
+                _this.call(context, ...arguments.contact(args))
+            }
+        }
+
+
+        // 冒泡排序
+        function bubbleSort(arr) {
+            let temp
+            for (let i = 0; i < arr.length - 1; i++) {
+                for (let j = 0; j < arr.length - i - 1; j++) {
+                    if (arr[j] > arr[j + 1]) {
+                        temp = arr[j]
+                        arr[j] = arr[j + 1]
+                        arr[j + 1] = temp
+                    }
+                }
+            }
+            return arr
+        }
+        // 插入排序
+        function insertSort(arr) {
+            let insertVal, insertIndex
+            for (let i = 1; i < arr.length; i++) {
+                insertIndex = i - 1
+                insertVal = arr[i]
+                while (insertIndex >= 0 && insertVal < arr[insertIndex]) {
+                    arr[insertIndex + 1] = arr[insertIndex]
+                    insertIndex--
+                }
+                arr[insertIndex + 1] = insertVal
+            }
+            return arr
+        }
+        // 快速排序
+        function quickSort(arr) {
+            helper(arr, 0, arr.length - 1)
+            return arr
+        }
+
+        function helper(arr, left, right) {
+            let l = left,
+                r = right,
+                pivot = arr[Math.floor((left + right) / 2)]
+            let temp
+            while (l < r) {
+                while (arr[l] < pivot) l++
+                while (arr[r] > pivot) r--
+                if (l >= r) break
+                temp = arr[l]
+                arr[l] = arr[r]
+                arr[r] = temp
+                if (arr[l] == pivot) r--
+                if (arr[r] == pivot) l++
+            }
+            if (r > left) helper(arr, left, r)
+            if (l < right) helper(arr, l, right)
+        }
+        // 选择排序
+        function selectSort(arr) {
+            for (let i = 0; i < arr.length; i++) {
+                let minIndex = i
+                let min = arr[i]
+                for (let j = i + 1; j < arr.length; j++) {
+                    if (arr[j] < min) {
+                        min = arr[j]
+                        minIndex = j
+                    }
+                }
+                arr[minIndex] = arr[i]
+                arr[i] = min
+            }
+        }
+
+        // 防抖
+        function debounce(fn, time) {
+            let timer
+            return function () {
+                let context = this
+                let args = arguments
+                if (timer) clearTimeout(timer)
+                timer = setTimeout(() => {
+                    fn.apply(context, args)
+                }, time)
+            }
+        }
+        // 节流
+        function throttle(fn, time) {
+            let timer
+            return function () {
+                let context = this
+                let args = arguments
+                if (!timer) {
+                    timer = setTimeout(() => {
+                        fn.apply(context, args)
+                    }, time)
+                }
+            }
+        }
+
+
     </script>
 
 </body>
