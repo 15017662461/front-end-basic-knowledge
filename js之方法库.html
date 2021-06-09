@@ -199,7 +199,7 @@
 
         // stopBubble(event)取消冒泡
         function stopBubble(event) {
-            if (event, stopPropagation) {
+            if (event.stopPropagation) {
                 event.stopPropagation();
             } else {
                 event.cancelBubble = true;
@@ -208,7 +208,7 @@
 
 
         // cancelHandler()阻止默认事件
-        function cancelHandler() {
+        function cancelHandler(event) {
             if (event.preventDefault) {
                 event.preventDefault();
             } else {
@@ -362,7 +362,7 @@
         }
 
         // 设置rem(就是根据视口宽设置html字体大小，等于视口宽/10)
-        //别忘了设置window.addEventListener('click',function(){setRem();},false);
+        //别忘了设置window.addEventListener('resize',function(){setRem();},false);
         function setRem() {
             const docEl = document.documentElement;
             let winWidth = docEl.offsetWidth;
