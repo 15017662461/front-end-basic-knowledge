@@ -386,7 +386,7 @@
 
         // 手写一个Promise，版本回退
         const PENDING = 'PENDING'
-        const RESOLVED = 'RESOLVED'
+        const FULFILLED = 'FULFILLED'
         const REJECTED = 'REJECTED'
 
         class MyPromise {
@@ -394,11 +394,14 @@
                 this.status = PENDING
                 this.value = null
                 this.reason = null
+                this.resolveArr = []
+                this.rejectArr = []
 
                 let resolve = (value) => {
                     if (this.status == PENDING) {
-                        this.status = RESOLVED
+                        this.status = FULFILLED
                         this.value = value
+                        this.resolveArr.forEach(r => r(value))
                     }
                 }
 
@@ -406,6 +409,7 @@
                     if (this.status == PENDING) {
                         this.status = REJECTED
                         this.reason = reason
+                        this.rejectArr.forEach(r => r(reason))
                     }
                 }
 
@@ -417,26 +421,18 @@
             }
 
             then(onResolved, onRejected) {
-                if (this.status == RESOLVED) {
-                    let temp
-                    try {
-                        temp = onResolved(this.value)
-                    } catch (e) {
-                        return new MyPromise((resolve, reject) => {
-                            reject(e)
-                        })
-                    }
-                    if (temp instanceof MyPromise) {
-                        return temp
+                let promise2 = new MyPromise((resolve, reject) => {
+                    if (this.status === FULFILLED) {
+                        let x = onResolved(this.value)
+                        resolve(x);
+                    } else if (this.status === REJECTED) {
+                        onRejected(this.reason)
                     } else {
-                        return new MyPromise((resolve, reject) => {
-                            resolve(temp)
-                        })
+                        this.resolveArr.push(onResolved);
+                        this.rejectArr.push(onRejected);
                     }
-                }
-                if (this.status == REJECTED) {
-                    onRejected(this.reason)
-                }
+                })
+                return promise2
             }
         }
 
