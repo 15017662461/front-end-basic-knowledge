@@ -22,12 +22,27 @@
 </head>
 
 <body>
-    <span class="rem">这是rem</span>
-    <div style="font-size: 10px;">
-        <span class="em">这是em</span>
+    <div id="div1">1
+        <div id="div2">2
+            <div id="div3">3</div>
+        </div>
     </div>
 
     <script>
+        // div1.addEventListener('click',() => {
+        //     console.log(1)
+        // })
+        div1.onclick = () => {
+            console.log(1)
+        }
+
+        div2.onclick = () => {
+            console.log(2)
+        }
+
+        div3.onclick = () => {
+            console.log(3)
+        }
         //inherit继承方法
         function inherit(Target, Origin) {
             function F() {};
