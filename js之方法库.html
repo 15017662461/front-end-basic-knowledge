@@ -389,21 +389,21 @@
         const RESOLVED = 'RESOLVED'
         const REJECTED = 'REJECTED'
 
-        class Promise {
+        class MyPromise {
             constructor(executor) {
                 this.status = PENDING
-                this.value = undefined
-                this.reason = undefined
+                this.value = null
+                this.reason = null
 
                 let resolve = (value) => {
-                    if (this.status = PENDING) {
+                    if (this.status == PENDING) {
                         this.status = RESOLVED
                         this.value = value
                     }
                 }
 
                 let reject = (reason) => {
-                    if (this.status = PENDING) {
+                    if (this.status == PENDING) {
                         this.status = REJECTED
                         this.reason = reason
                     }
@@ -418,7 +418,21 @@
 
             then(onResolved, onRejected) {
                 if (this.status == RESOLVED) {
-                    onResolved(this.value)
+                    let temp
+                    try {
+                        temp = onResolved(this.value)
+                    } catch (e) {
+                        return new MyPromise((resolve, reject) => {
+                            reject(e)
+                        })
+                    }
+                    if (temp instanceof MyPromise) {
+                        return temp
+                    } else {
+                        return new MyPromise((resolve, reject) => {
+                            resolve(temp)
+                        })
+                    }
                 }
                 if (this.status == REJECTED) {
                     onRejected(this.reason)
@@ -590,42 +604,41 @@
         // 节流
         function throttle(fn, time) {
             let timer
-            return function(){
+            return function () {
                 let context = this
                 let args = arguments
-                if(!timer){
-                    timer = setTimeout(() =>{
-                        fn.apply(context,args)
-                    },time)
+                if (!timer) {
+                    timer = setTimeout(() => {
+                        fn.apply(context, args)
+                    }, time)
                 }
             }
         }
 
         // 实现一个LRU
-        function LRU(capacity){
+        function LRU(capacity) {
             this.cache = new Map()
             this.capacity = capacity
         }
 
-        LRU.prototype.put = function(key,value){
-            if(this.cache.has(key)){
+        LRU.prototype.put = function (key, value) {
+            if (this.cache.has(key)) {
                 this.cache.delete(key)
-            }else if(this.cache.size >= this.capacity){
+            } else if (this.cache.size >= this.capacity) {
                 this.cache.delete(this.cache.keys().next().value)
             }
-            this.cache.set(key,value)
+            this.cache.set(key, value)
         }
 
-        LRU.prototype.get = function(key){
-            if(this.cache.has(key)){
+        LRU.prototype.get = function (key) {
+            if (this.cache.has(key)) {
                 let temp = this.cache.get(key)
                 this.cache.delete(key)
-                this.cache.set(key,temp)
+                this.cache.set(key, temp)
                 return temp
             }
             return -1
         }
-
     </script>
 
 </body>
