@@ -384,55 +384,86 @@
             docEl.style.fontSize = winWidth / 10 + 'px';
         }
 
-        // 手写一个Promise，版本回退
+        // 手写promise实现链式调用
         const PENDING = 'PENDING'
         const FULFILLED = 'FULFILLED'
         const REJECTED = 'REJECTED'
 
         class MyPromise {
             constructor(executor) {
-                this.status = PENDING
-                this.value = null
-                this.reason = null
-                this.resolveArr = []
-                this.rejectArr = []
-
-                let resolve = (value) => {
-                    if (this.status == PENDING) {
-                        this.status = FULFILLED
-                        this.value = value
-                        this.resolveArr.forEach(r => r(value))
-                    }
-                }
-
-                let reject = (reason) => {
-                    if (this.status == PENDING) {
-                        this.status = REJECTED
-                        this.reason = reason
-                        this.rejectArr.forEach(r => r(reason))
-                    }
-                }
-
                 try {
-                    executor(resolve, reject)
-                } catch (error) {
-                    reject(error)
+                    executor(this.resolve, this.reject)
+                } catch (e) {
+                    this.reject(e)
+                }
+            }
+            status = PENDING
+            value = null
+            reason = null
+
+            onFulfilledCallbacks = []
+            onRejectedCallbacks = []
+
+            resolve = (value) => {
+                if (this.status === PENDING) {
+                    this.status = FULFILLED
+                    this.value = value
+                    while (this.onFulfilledCallbacks.length) {
+                        this.onFulfilledCallbacks.shift()(value)
+                    }
                 }
             }
 
-            then(onResolved, onRejected) {
-                let promise2 = new MyPromise((resolve, reject) => {
-                    if (this.status === FULFILLED) {
-                        let x = onResolved(this.value)
-                        resolve(x);
+            reject = (reason) => {
+                if (this.status === PENDING) {
+                    this.status = REJECTED
+                    this.reason = reason
+                    while (this.onRejectedCallbacks.length) {
+                        this.onRejectedCallbacks.shift()(reason)
+                    }
+                }
+            }
+
+            then(onFulfilled, onRejected) {
+                const promise2 = new MyPromise((resolve, reject) => {
+                    const fulfilledMicrotask = () => {
+                        queueMicrotask(() => {
+                            try {
+                                let x = onFulfilled(this.value)
+                                resolvePromise(x, resolve, reject)
+                            } catch (e) {
+                                reject(e)
+                            }
+                        })
+                    }
+                    const rejectedMicrotask = () => {
+                        queueMicrotask(() => {
+                            try {
+                                let x = onRejected(this.reason)
+                                resolvePromise(x, resolve, reject)
+                            } catch (e) {
+                                reject(e)
+                            }
+                        })
+                    }
+                    if (this.status === PENDING) {
+                        this.onFulfilledCallbacks.push(fulfilledMicrotask)
+                        this.onRejectedCallbacks.push(rejectedMicrotask)
+                    } else if (this.status === FULFILLED) {
+                        fulfilledMicrotask()
                     } else if (this.status === REJECTED) {
-                        onRejected(this.reason)
-                    } else {
-                        this.resolveArr.push(onResolved);
-                        this.rejectArr.push(onRejected);
+                        rejectedMicrotask()
                     }
                 })
                 return promise2
+            }
+        }
+
+        function resolvePromise(x, resolve, reject) {
+            if (x instanceof MyPromise) {
+                x.then(resolve, reject)
+            } else {
+                resolve(x)
             }
         }
 
