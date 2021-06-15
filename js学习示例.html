@@ -77,7 +77,7 @@
 </head>
 
 <body>
-    <div class="mental">
+    <div class="mental" id="main">
         <div class="first"></div>
         <div class="second"></div>
         <div class="third"></div>
@@ -121,21 +121,87 @@
 
         console.log(add(1, 2, 3)(4))
 
-        Function.prototype.myBind = function (context, ...args) {
-            let _this = this
-            return function (...a) {
-                _this.call(context, ...args.concat(a))
+        const PENDING = 'pending'
+        const FULFILLED = 'fulfilled'
+        const REJECTED = 'rejected'
+        class MyPromise {
+            constructor(executor) {
+                try {
+                    executor(this.resolve, this.reject)
+                } catch (e) {
+                    this.reject(e)
+                }
+            }
+            status = PENDING
+            value = null
+            reason = null
+            resolveArr = []
+            rejectArr = []
+
+            resolve = (value) => {
+                if (this.status === PENDING) {
+                    this.status = FULFILLED
+                    this.value = value
+                    while (this.resolveArr.length) {
+                        this.resolveArr.shift()(value)
+                    }
+                }
+            }
+
+            reject = (reason) => {
+                if (this.status === PENDING) {
+                    this.status = REJECTED
+                    this.reason = reason
+                    while (this.rejectArr.length) {
+                        this.rejectArr.shift()(reason)
+                    }
+                }
+            }
+
+            then(onFulfilled, onRejected) {
+                const promise2 = new MyPromise((resolve, reject) => {
+                    const microResolve = () => {
+                        queueMicrotask(() => {
+                            try {
+                                let x = onFulfilled(this.value)
+                                resolvePromise(x, resolve, reject)
+                            } catch (e) {
+                                reject(e)
+                            }
+                        })
+                    }
+
+                    const microReject = () => {
+                        queueMicrotask(() => {
+                            try {
+                                let x = onRejected(this.reason)
+                                resolvePromise(x, resolve, reject)
+                            } catch (e) {
+                                reject(e)
+                            }
+                        })
+                    }
+
+                    if (this.status === PENDING) {
+                        this.resolveArr.push(microResolve)
+                        this.rejectArr.push(microReject)
+                    } else if (this.status === FULFILLED) {
+                        microResolve()
+                    } else {
+                        microReject()
+                    }
+                })
+                return promise2
             }
         }
 
-        Function.prototype.myCall = function (context,...args){
-            context['fn'] = this
-            return context['fn'](...args)
+        function resolvePromise(x, resolve, reject) {
+            if (x instanceof MyPromise) {
+                x.then(resolve, reject)
+            } else {
+                resolve(x)
+            }
         }
-
-
-
-
     </script>
 </body>
 
