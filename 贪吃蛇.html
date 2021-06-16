@@ -39,6 +39,37 @@
         <div class="map" id="map"></div>
         <script src="贪吃蛇.js"></script>
     </div>
+    <script>
+        // 给一个0,1数组和数字k，可以将k个0变成1，问最长连续1的长度
+        let max = 0
+        function main(arr,k){
+            test(arr,0,k)
+        }
+
+        function test(arr,index,k){
+            if(index === arr.length || k === 0){
+                let len = 0
+                for(let i = 0;i < arr.length;i ++){
+                    if(arr[i] === 1){
+                        len ++
+                        max = Math.max(max,len)
+                    }else{
+                        len = 0
+                    }
+                }
+            }
+            for(let i = 0;i < arr.length;i ++){
+                if(arr[i] === 0){
+                    arr[i] = 1
+                    test(arr,index+1,k-1)
+                    arr[i] = 0
+                }
+            }
+        }
+
+        main([0,1,1,1,0,0,1,0,1,0,1],2)
+        console.log(max)
+    </script>
 </body>
 
 </html>

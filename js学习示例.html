@@ -78,57 +78,24 @@
 
 <body>
     <div class="mental" id="main">
-        <div class="first"></div>
-        <div class="second"></div>
-        <div class="third"></div>
-        <div class="forth"></div>
-        <div class="fifth"></div>
+        <div class="first huan"></div>
+        <div class="second huan"></div>
+        <div class="third huan"></div>
+        <div class="forth huan"></div>
+        <div class="fifth huan"></div>
     </div>
 
     <script>
-        function currying(fn, length) {
-            length = length || fn.length;
-            return function (...args) {
-                if (args.length >= length) {
-                    return fn(...args)
-                } else {
-                    return currying(fn.bind(null, ...args), length - args.length)
-                }
-            }
-        }
-
-        function add(a, b, c, d) {
-            return a + b + c + d;
-        }
-        add = currying(add, 4)
-        console.log(add(1)(2)(3)(4))
-        console.log(add(1, 2)(3)(4))
-
-        function add() {
-            let _args = Array.prototype.slice.call(arguments)
-
-            function _add() {
-                _args.push(...arguments)
-                return _add
-            }
-            _add.toString = () => {
-                return _args.reduce((a, b) => {
-                    return a + b
-                })
-            }
-            return _add
-        }
-
-        console.log(add(1, 2, 3)(4))
 
         const PENDING = 'pending'
         const FULFILLED = 'fulfilled'
         const REJECTED = 'rejected'
-        class MyPromise {
-            constructor(executor) {
-                try {
-                    executor(this.resolve, this.reject)
-                } catch (e) {
+
+        class MyPromise{
+            constructor(executor){
+                try{
+                    executor(this.resolve,this.reject)
+                }catch(e){
                     this.reject(e)
                 }
             }
@@ -139,33 +106,33 @@
             rejectArr = []
 
             resolve = (value) => {
-                if (this.status === PENDING) {
-                    this.status = FULFILLED
+                if(this.status === PENDING){
                     this.value = value
-                    while (this.resolveArr.length) {
+                    this.status = FULFILLED
+                    while(this.resolveArr.length){
                         this.resolveArr.shift()(value)
                     }
                 }
             }
 
             reject = (reason) => {
-                if (this.status === PENDING) {
-                    this.status = REJECTED
+                if(this.status === PENDING){
                     this.reason = reason
-                    while (this.rejectArr.length) {
+                    this.status = REJECTED
+                    while(this.rejectArr.length){
                         this.rejectArr.shift()(reason)
                     }
                 }
             }
 
-            then(onFulfilled, onRejected) {
-                const promise2 = new MyPromise((resolve, reject) => {
+            then(onFulfilled,onRejected){
+                const promise2 = new MyPromise((resolve,reject) => {
                     const microResolve = () => {
                         queueMicrotask(() => {
-                            try {
+                            try{
                                 let x = onFulfilled(this.value)
-                                resolvePromise(x, resolve, reject)
-                            } catch (e) {
+                                resolvePromise(x,resolve,reject)
+                            }catch(e){
                                 reject(e)
                             }
                         })
@@ -173,21 +140,21 @@
 
                     const microReject = () => {
                         queueMicrotask(() => {
-                            try {
+                            try{
                                 let x = onRejected(this.reason)
-                                resolvePromise(x, resolve, reject)
-                            } catch (e) {
+                                resolvePromise(x,resolve,reject)
+                            }catch(e){
                                 reject(e)
                             }
                         })
                     }
 
-                    if (this.status === PENDING) {
+                    if(this.status === FULFILLED){
                         this.resolveArr.push(microResolve)
                         this.rejectArr.push(microReject)
-                    } else if (this.status === FULFILLED) {
+                    }else if(this.status === FULFILLED){
                         microResolve()
-                    } else {
+                    }else if(this.status === REJECTED){
                         microReject()
                     }
                 })
@@ -195,10 +162,10 @@
             }
         }
 
-        function resolvePromise(x, resolve, reject) {
-            if (x instanceof MyPromise) {
-                x.then(resolve, reject)
-            } else {
+        function resolvePromise(x,resolve,reject){
+            if(x instanceof MyPromise){
+                x.then(resolve,reject)
+            }else{
                 resolve(x)
             }
         }
