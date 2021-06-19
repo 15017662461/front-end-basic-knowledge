@@ -668,69 +668,14 @@
         }
 
 
-
-        var spiralOrder = function (arr) {
-            let res = [];
-            if (!arr.length) return res;
-            // 先设置好碰壁边界，向左边走到头的边界是0也是右边的起点，右边走到头的边界是arr[0].length-1也是左边的起点
-            // 向上面走的边界是0也是下面的起点，向下面走到头的边界是arr.length-1也是上面的起点
-            let l = 0,
-                r = arr[0].length - 1;
-            let t = 0,
-                b = arr.length - 1;
-            while (true) {
-                for (let i = l; i <= r; i++){
-                    res.push(arr[t][i]);
-                    t ++
-                }
-                if (t > b) return res;
-                for (let j = t; j <= b; j++){
-                    res.push(arr[j][r]);
-                    r --
-                }
-                if (r < l) return res;
-                for (let m = r; m >= l; m--){
-                    res.push(arr[b][m]);
-                    b --
-                }
-                if (b < t) return res;
-                for (let n = b; n >= t; n--){
-                    res.push(arr[n][l]);
-                    l ++
-                }
-                if (l > r) return res;
+        function maxLen(arr){
+            let res = 0
+            let sum = 0
+            for(let i = 0;i < arr.length;i ++){
+                sum = Math.max(arr[i],sum+arr[i])
+                res = Math.max(sum,res)
             }
-        };
-
-        function shunshizhen(arr){
-            let res = []
-            if(!arr.length) return res
-            let t = 0
-            let r = arr[0].length - 1
-            let b = arr.length - 1
-            let l = 0
-            while(true){
-                for(let i = l;i <= r;i ++){
-                    res.push(arr[t][i])
-                }
-                t ++
-                if(t > b) return res
-                for(let j = t;j <= b;j ++){
-                    res.push(arr[j][r])
-                }
-                r --
-                if(r < l) return res
-                for(let m = r;m >= l;m --){
-                    res.push(arr[b][m])
-                }
-                b --
-                if(b < t) return res
-                for(let n = b;n >= t;n --){
-                    res.push(arr[n][l])
-                }
-                l ++
-                if(l > r) return res
-            }
+            return res
         }
     </script>
 
