@@ -668,15 +668,35 @@
         }
 
 
-        function maxLen(arr){
+        function maxLen(arr) {
             let res = 0
             let sum = 0
-            for(let i = 0;i < arr.length;i ++){
-                sum = Math.max(arr[i],sum+arr[i])
-                res = Math.max(sum,res)
+            for (let i = 0; i < arr.length; i++) {
+                sum = Math.max(arr[i], sum + arr[i])
+                res = Math.max(sum, res)
             }
             return res
         }
+
+        class Node {
+            constructor(value, left, right) {
+                this.value = value
+                this.left = left
+                this.right = right
+            }
+        }
+
+        function tree(preOrder, inOrder) {
+            if (!preOrder.length || !inOrder.length) return null
+            const root = new Node(preOrder[0])
+            const rootIndex = inOrder.indexOf(preOrder[0])
+            const leftLen = rootIndex
+            root.left = tree(preOrder.slice(1, 1 + leftLen), inOrder.slice(0, rootIndex))
+            root.right = tree(preOrder.slice(1 + leftLen), inOrder.slice(rootIndex + 1))
+            return root
+        }
+
+        console.log(tree([3, 9, 18, 16, 20, 15, 7], [18, 9, 16, 3, 15, 20, 7]))
     </script>
 
 </body>
